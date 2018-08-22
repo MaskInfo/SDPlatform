@@ -31,7 +31,7 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.elec.ncdp</groupId>
+            <groupId>cn.org.upthink</groupId>
             <artifactId>elec-common</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
