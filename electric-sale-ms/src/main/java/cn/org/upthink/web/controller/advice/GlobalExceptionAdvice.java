@@ -1,5 +1,6 @@
 package cn.org.upthink.web.controller.advice;
 
+import cn.org.upthink.anno.RequestLogging;
 import cn.org.upthink.common.dto.BaseResult;
 import cn.org.upthink.model.ResponseCode;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,12 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class GlobalExceptionAdvice {
 
+    @RequestLogging
     @ExceptionHandler({IllegalStateException.class,NullPointerException.class,IllegalArgumentException.class})
     @ResponseBody
     public BaseResult<?> handlerIllegalStateException(Exception e){
         return getErrorResult(e.getMessage(),ResponseCode.INVALID_PARAM);
     }
-
+    @RequestLogging
     @ExceptionHandler()
     @ResponseBody
     public BaseResult<?> handlerException(Exception e){

@@ -1,5 +1,6 @@
 package cn.org.upthink.controller;
 
+import cn.org.upthink.anno.RequestLogging;
 import cn.org.upthink.converter.Bean2VOConverter;
 import cn.org.upthink.converter.DTO2BeanConverter;
 import cn.org.upthink.model.dto.LoopImgFormDTO;
@@ -76,7 +77,7 @@ public class LoopImgController extends BaseController {
             return getBaseResultSuccess(null, "已成功删除LoopImg对象");
         });
     }
-
+    @RequestLogging
     @ApiOperation(value="新增LoopImg", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @PostMapping(value = "/loopImg", produces = "application/json;charset=UTF-8")
     public BaseResult<?> addLoopImg(@ApiParam @RequestBody LoopImgFormDTO loopImgFormDTO) {
