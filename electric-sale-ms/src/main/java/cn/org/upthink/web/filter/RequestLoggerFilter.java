@@ -17,15 +17,12 @@ import java.io.IOException;
 public class RequestLoggerFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        logger.info("reuqestFilter...");
         ResettableStreamHttpServletRequest wrapperRequest = ResettableStreamHttpServletRequest.wrapper(request);
         byte[] requestBody = wrapperRequest.getRequestBody();
         String requestBodyStr = new String(requestBody, Charsets.UTF_8);
         if(request != null){
             request.setAttribute(RequestLoggerAttribute.REQUEST_BODY_ID,requestBodyStr);
         }
-        //filterChain.doFilter(request,response);
         super.doFilter(wrapperRequest,response,filterChain);
-        //todo   aspect insert logger
     }
 }

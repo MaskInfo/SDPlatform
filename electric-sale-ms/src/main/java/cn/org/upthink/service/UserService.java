@@ -1,11 +1,13 @@
 package cn.org.upthink.service;
 
+import cn.org.upthink.model.dto.UserFormDTO;
 import cn.org.upthink.persistence.mybatis.dto.Page;
 import cn.org.upthink.persistence.mybatis.service.BaseCrudService;
 import cn.org.upthink.persistence.mybatis.util.StringUtils;
 //import cn.org.upthink.frame.modules.sys.utils.UserUtils;
 import cn.org.upthink.mapper.UserMapper;
 import cn.org.upthink.entity.User;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -22,17 +24,16 @@ public class UserService extends BaseCrudService<UserMapper, User> {
     }
 
     @Transactional(readOnly = false)
-    public void save(User user) {
-        // 如果没有审核权限，则将当前内容改为待审核状态
-        /*if (!UserUtils.getSubject().isPermitted("school:user:audit")){
-            user.setDelFlag(User.DEL_FLAG_AUDIT);
-        }*/
-        //user.setUpdateBy(UserUtils.getUser());
-        user.setUpdateDate(new Date());
-        if (StringUtils.isBlank(user.getId())){
+    public void save(UserFormDTO userFormDTO) {
+        User user = new User();
+        user.setOpenId(userFormDTO.getOpenId());
+        Page<User> page = findPage(new Page<>(), user);
+        BeanUtils.copyProperties(userFormDTO, user);
+        if(page.getList() == null || page.getList().size() == 0){
             user.preInsert();
             dao.insert(user);
         }else{
+            user = page.getList().get(0);
             user.preUpdate();
             dao.update(user);
         }

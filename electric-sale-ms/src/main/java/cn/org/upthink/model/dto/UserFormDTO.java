@@ -16,7 +16,7 @@ public class UserFormDTO implements Serializable {
     private String headImg;
 
     @ApiModelProperty(value="openId", name="openId", required=true)
-    private Integer openId;
+    private String openId;
 
     @ApiModelProperty(value="昵称", name="nickName", required=true)
     private String nickName;

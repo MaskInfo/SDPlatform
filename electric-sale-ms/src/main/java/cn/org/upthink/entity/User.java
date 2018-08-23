@@ -18,7 +18,7 @@ public class User extends BaseDataEntity<User> {
     @TableField(name = "nick_name",isQuery = true,required = true,remark = "昵称")
     private String nickName;
     @TableField(name = "open_id",isQuery = true,required = true,remark = "openId")
-    private Integer openId;
+    private String openId;
 
 
 }

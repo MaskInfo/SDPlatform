@@ -14,24 +14,35 @@ import lombok.ToString;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 @Getter@Setter@ToString
 public class ResponseLogger {
-
 
     public static ResponseLogger with(Object responseBody){
         return new ResponseLogger(responseBody);
     }
     private ResponseLogger(Object responseBody){
+        this.headers = fetchHttpHeaders();
         this.responseBody = responseBody;
     }
+
     @JsonIgnore
-    private final HttpServletResponse request = UserContext.getResponse();
+    private final HttpServletResponse response = UserContext.getResponse();
     @JsonProperty("headers")
-    private Map<String,Object> headers;//todo
+    private Map<String,Object> headers;
     @JsonProperty("response_body")
     private Object responseBody;
+
+    private Map fetchHttpHeaders(){
+        Map<String, Object> map = new HashMap<>();
+        Collection<String> headerNames = response.getHeaderNames();
+        String header;
+        for (String headerName : headerNames) {
+            header = response.getHeader(headerName);
+            map.put(headerName, header);
+        }
+        return map;
+    }
 
 }

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * 键值对string 转换为  map形式json
+ * 键值对string 转换为 map形式json
  */
 public class String2MapConverter extends JsonSerializer {
 

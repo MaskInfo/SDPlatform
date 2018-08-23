@@ -1,4 +1,4 @@
-package cn.org.upthink.controller;
+package cn.org.upthink.web.controller;
 
 import cn.org.upthink.anno.RequestLogging;
 import cn.org.upthink.converter.Bean2VOConverter;

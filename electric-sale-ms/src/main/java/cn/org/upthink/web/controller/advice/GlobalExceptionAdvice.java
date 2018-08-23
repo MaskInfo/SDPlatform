@@ -2,7 +2,9 @@ package cn.org.upthink.web.controller.advice;
 
 import cn.org.upthink.anno.RequestLogging;
 import cn.org.upthink.common.dto.BaseResult;
-import cn.org.upthink.model.ResponseCode;
+import cn.org.upthink.model.ResponseConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,18 +18,22 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class GlobalExceptionAdvice {
 
-    @RequestLogging
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @ExceptionHandler({IllegalStateException.class,NullPointerException.class,IllegalArgumentException.class})
     @ResponseBody
     public BaseResult<?> handlerIllegalStateException(Exception e){
-        return getErrorResult(e.getMessage(),ResponseCode.INVALID_PARAM);
+        logger.error(e.getMessage().toString());
+        return getErrorResult(e.getMessage(), ResponseConstant.INVALID_PARAM.getCode());
     }
-    @RequestLogging
-    @ExceptionHandler()
+
+    @ExceptionHandler(Exception.class)
     @ResponseBody
     public BaseResult<?> handlerException(Exception e){
-        return getErrorResult(e.getMessage(),ResponseCode.HANDLER_EXCEPTION);
+        logger.error(e.getMessage().toString());
+        return getErrorResult(e.getMessage(),ResponseConstant.HANDLER_EXCEPTION.getCode());
     }
+
     private BaseResult<String> getErrorResult(String errorCode,String msg){
         BaseResult<String> errorRet = new BaseResult<>();
         errorRet.setCode(errorCode);

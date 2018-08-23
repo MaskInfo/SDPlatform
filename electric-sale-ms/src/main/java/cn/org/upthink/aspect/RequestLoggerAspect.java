@@ -23,19 +23,19 @@ import java.util.concurrent.TimeUnit;
 public class RequestLoggerAspect {
     protected static final Logger logger = LoggerFactory.getLogger(RequestLoggerAspect.class);
 
-    @Around(value = "@annotation(cn.org.upthink.anno.RequestLogging)")
+    @Around(value = "@annotation(org.springframework.web.bind.annotation.RequestMapping) || @annotation(org.springframework.web.bind.annotation.ResponseBody)")
     public Object aroundMethod(ProceedingJoinPoint joinPoint) throws Throwable {
-        logger.info("requestLoggerAspect......");
+        logger.info("RequestLoggerAspect......");
         //do
         Object resp = joinPoint.proceed();
         //done 创建日志类
         RequestLogger requestLogger = RequestLogger.builder()
                 .apiDesc(getApiDescByRequestSignature(joinPoint))
                 .responseTime(new Date())
-                .build();
+                .build().init();
         //保存日志
         System.out.println(requestLogger);
-        logger.info("LOGGING------》\n Request: \n{} \n Response:\n {}",requestLogger,ResponseLogger.with(resp));
+        logger.info("LOGGING------>\n Request: \n{} \n Response:\n {}",requestLogger,ResponseLogger.with(resp));
         return resp;
     }
 

@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel(value="User对象", description="")
-public class UserQueryDTO implements Serializable {
+public class UserQueryDTO extends BaseQueryDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -16,7 +16,7 @@ public class UserQueryDTO implements Serializable {
     private String headImg;
 
     @ApiModelProperty(value="openId", name="openId", required=false)
-    private Integer openId;
+    private String openId;
 
     @ApiModelProperty(value="昵称", name="nickName", required=false)
     private String nickName;

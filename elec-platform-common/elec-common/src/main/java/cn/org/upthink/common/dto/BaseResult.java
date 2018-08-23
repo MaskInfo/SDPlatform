@@ -1,5 +1,7 @@
 package cn.org.upthink.common.dto;
 
+import com.alibaba.fastjson.JSON;
+
 import java.io.Serializable;
 
 /**
@@ -123,5 +125,10 @@ public class BaseResult<T extends Object> implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }
