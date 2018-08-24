@@ -23,10 +23,10 @@ public abstract class LoginTokenHelper {
      * 设置session
      */
     public static String setSession(String sessionKey, String openId){
-        String key = String.format("%s#%s", sessionKey, openId);
-        deleteOldToken(key);
+        String val = String.format("%s#%s", sessionKey, openId);
         String accessToken = getAccessToken();
-        stringRedisTemplate.boundValueOps(key).set(accessToken);
+        deleteOldToken(accessToken);
+        stringRedisTemplate.boundValueOps(accessToken).set(val);
         stringRedisTemplate.expire(accessToken, ACCESSTOKENEXPIRESIN, TimeUnit.DAYS);
 
         return accessToken;

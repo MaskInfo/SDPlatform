@@ -1,10 +1,8 @@
 package cn.org.upthink.model.type;
 
 
-import com.alibaba.druid.proxy.jdbc.JdbcParameter;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public enum LoopTypeEnum {

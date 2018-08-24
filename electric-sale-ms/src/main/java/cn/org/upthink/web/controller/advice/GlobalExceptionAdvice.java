@@ -2,6 +2,7 @@ package cn.org.upthink.web.controller.advice;
 
 import cn.org.upthink.anno.RequestLogging;
 import cn.org.upthink.common.dto.BaseResult;
+import cn.org.upthink.exception.BussinessException;
 import cn.org.upthink.model.ResponseConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +24,19 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler({IllegalStateException.class,NullPointerException.class,IllegalArgumentException.class})
     @ResponseBody
     public BaseResult<?> handlerIllegalStateException(Exception e){
-        logger.error(e.getMessage().toString());
-        return getErrorResult(e.getMessage(), ResponseConstant.INVALID_PARAM.getCode());
+        return getErrorResult(ResponseConstant.INVALID_PARAM.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(BussinessException.class)
+    @ResponseBody
+    public BaseResult<?> handlerBussinessException(Exception e){
+        return getErrorResult(ResponseConstant.BUSSINESS_EXCEPTION.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public BaseResult<?> handlerException(Exception e){
-        logger.error(e.getMessage().toString());
-        return getErrorResult(e.getMessage(),ResponseConstant.HANDLER_EXCEPTION.getCode());
+        return getErrorResult(ResponseConstant.HANDLER_EXCEPTION.getCode(), e.getMessage());
     }
 
     private BaseResult<String> getErrorResult(String errorCode,String msg){

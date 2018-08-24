@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.upthink.mapper.ExpertMapper">
+
+    <sql id="expertDaoColumns">
+        <!--a.id AS "id",
+        a.create_by AS "createBy.id",
+        a.create_date AS "createDate",
+        a.update_by AS "updateBy.id",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",-->
+		a.EXPERT_RESUME AS "expertResume",
+		a.EXPERT_NAME AS "expertName",
+		a.EXPERT_DETAIL AS "expertDetail",
+		a.TELEPHONE,
+		a.QUIZ_PRICE AS "quizPrice",
+		a.AUDITORID,
+		a.STATE,
+		a.EMAIL,
+		a.AUDIT_DATE AS "auditDate"
+    </sql>
+
+    <sql id="expertJoins">
+        <!--todo-->
+    </sql>
+
+    <select id="get" resultType="cn.org.upthink.entity.Expert">
+        SELECT
+        <include refid="expertDaoColumns"/>
+        FROM tb_expert a
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="find" resultType="cn.org.upthink.entity.Expert">
+        SELECT
+        <include refid="expertDaoColumns"/>
+        FROM tb_expert a
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findList" resultType="cn.org.upthink.entity.Expert">
+        SELECT
+        <include refid="expertDaoColumns"/>
+        FROM tb_expert a
+        <where>
+            a.del_flag = #{delFlag}
+            <!--<if test="name != null and name != ''">
+                AND a.name LIKE
+                <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+            </if>-->
+             <if test="expertResume != null and expertResume != ''">
+                AND a.EXPERT_RESUME LIKE CONCAT('%', #{expertResume}, '%')
+             </if>
+             <if test="expertName != null and expertName != ''">
+                AND a.EXPERT_NAME LIKE CONCAT('%', #{expertName}, '%')
+             </if>
+             <if test="expertDetail != null and expertDetail != ''">
+                AND a.EXPERT_DETAIL LIKE CONCAT('%', #{expertDetail}, '%')
+             </if>
+             <if test="telephone != null and telephone != ''">
+                AND a.TELEPHONE LIKE CONCAT('%', #{telephone}, '%')
+             </if>
+             <if test="quizPrice != null and quizPrice != ''">
+                AND a.QUIZ_PRICE LIKE CONCAT('%', #{quizPrice}, '%')
+             </if>
+             <if test="auditorId != null and auditorId != ''">
+                AND a.AUDITORID LIKE CONCAT('%', #{auditorId}, '%')
+             </if>
+             <if test="state != null and state != ''">
+                AND a.STATE LIKE CONCAT('%', #{state}, '%')
+             </if>
+             <if test="email != null and email != ''">
+                AND a.EMAIL LIKE CONCAT('%', #{email}, '%')
+             </if>
+             <if test="auditDate != null and auditDate != ''">
+                AND a.AUDIT_DATE LIKE CONCAT('%', #{auditDate}, '%')
+             </if>
+		${sqlMap.dsf}
+        </where>
+        ORDER BY a.update_date DESC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO tb_expert(
+			<!--id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,-->
+			EXPERT_RESUME,
+			EXPERT_NAME,
+			EXPERT_DETAIL,
+			TELEPHONE,
+			QUIZ_PRICE,
+			AUDITORID,
+			STATE,
+			EMAIL,
+			AUDIT_DATE
+        ) VALUES (
+			<!--#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},-->
+		    #{expertResume},
+		    #{expertName},
+		    #{expertDetail},
+		    #{telephone},
+		    #{quizPrice},
+		    #{auditorId},
+		    #{state},
+		    #{email},
+		    #{auditDate}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_expert
+        <trim prefix="SET" suffixOverrides=",">
+		   <if test="expertResume!=null">EXPERT_RESUME = #{expertResume},</if>
+		   <if test="expertName!=null">EXPERT_NAME = #{expertName},</if>
+		   <if test="expertDetail!=null">EXPERT_DETAIL = #{expertDetail},</if>
+		   <if test="telephone!=null">TELEPHONE = #{telephone},</if>
+		   <if test="quizPrice!=null">QUIZ_PRICE = #{quizPrice},</if>
+		   <if test="auditorId!=null">AUDITORID = #{auditorId},</if>
+		   <if test="state!=null">STATE = #{state},</if>
+		   <if test="email!=null">EMAIL = #{email},</if>
+		   <if test="auditDate!=null">AUDIT_DATE = #{auditDate},</if>
+		</trim>
+        WHERE id = #{id}
+    </update>
+
+    <update id="delete">
+        UPDATE tb_expert SET del_flag = #{DEL_FLAG_DELETE} WHERE id = #{id}
+    </update>
+
+</mapper>

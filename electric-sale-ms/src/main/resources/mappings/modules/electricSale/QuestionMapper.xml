@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.upthink.mapper.QuestionMapper">
+
+    <sql id="questionDaoColumns">
+        <!--a.id AS "id",
+        a.create_by AS "createBy.id",
+        a.create_date AS "createDate",
+        a.update_by AS "updateBy.id",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",-->
+		a.QUES_TITLE AS "quesTitle",
+		a.QUES_DETAIL AS "quesDetail",
+		a.QUES_DATE AS "quesDate",
+		a.QUESTIONER,
+		a.ANSWERER,
+		a.ANS_DATE AS "ansDate",
+		a.ANS_DETAIL AS "ansDetail"
+    </sql>
+
+    <sql id="questionJoins">
+        <!--todo-->
+    </sql>
+
+    <select id="get" resultType="cn.org.upthink.entity.Question">
+        SELECT
+        <include refid="questionDaoColumns"/>
+        FROM tb_question a
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="find" resultType="cn.org.upthink.entity.Question">
+        SELECT
+        <include refid="questionDaoColumns"/>
+        FROM tb_question a
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findList" resultType="cn.org.upthink.entity.Question">
+        SELECT
+        <include refid="questionDaoColumns"/>
+        FROM tb_question a
+        <where>
+            a.del_flag = #{delFlag}
+            <!--<if test="name != null and name != ''">
+                AND a.name LIKE
+                <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+            </if>-->
+             <if test="quesTitle != null and quesTitle != ''">
+                AND a.QUES_TITLE LIKE CONCAT('%', #{quesTitle}, '%')
+             </if>
+             <if test="quesDetail != null and quesDetail != ''">
+                AND a.QUES_DETAIL LIKE CONCAT('%', #{quesDetail}, '%')
+             </if>
+             <if test="quesDate != null and quesDate != ''">
+                AND a.QUES_DATE LIKE CONCAT('%', #{quesDate}, '%')
+             </if>
+             <if test="questioner != null and questioner != ''">
+                AND a.QUESTIONER LIKE CONCAT('%', #{questioner}, '%')
+             </if>
+             <if test="answerer != null and answerer != ''">
+                AND a.ANSWERER LIKE CONCAT('%', #{answerer}, '%')
+             </if>
+             <if test="ansDate != null and ansDate != ''">
+                AND a.ANS_DATE LIKE CONCAT('%', #{ansDate}, '%')
+             </if>
+             <if test="ansDetail != null and ansDetail != ''">
+                AND a.ANS_DETAIL LIKE CONCAT('%', #{ansDetail}, '%')
+             </if>
+		${sqlMap.dsf}
+        </where>
+        ORDER BY a.update_date DESC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO tb_question(
+			<!--id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,-->
+			QUES_TITLE,
+			QUES_DETAIL,
+			QUES_DATE,
+			QUESTIONER,
+			ANSWERER,
+			ANS_DATE,
+			ANS_DETAIL
+        ) VALUES (
+			<!--#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},-->
+		    #{quesTitle},
+		    #{quesDetail},
+		    #{quesDate},
+		    #{questioner},
+		    #{answerer},
+		    #{ansDate},
+		    #{ansDetail}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_question
+        <trim prefix="SET" suffixOverrides=",">
+		   <if test="quesTitle!=null">QUES_TITLE = #{quesTitle},</if>
+		   <if test="quesDetail!=null">QUES_DETAIL = #{quesDetail},</if>
+		   <if test="quesDate!=null">QUES_DATE = #{quesDate},</if>
+		   <if test="questioner!=null">QUESTIONER = #{questioner},</if>
+		   <if test="answerer!=null">ANSWERER = #{answerer},</if>
+		   <if test="ansDate!=null">ANS_DATE = #{ansDate},</if>
+		   <if test="ansDetail!=null">ANS_DETAIL = #{ansDetail},</if>
+		</trim>
+        WHERE id = #{id}
+    </update>
+
+    <update id="delete">
+        UPDATE tb_question SET del_flag = #{DEL_FLAG_DELETE} WHERE id = #{id}
+    </update>
+
+</mapper>

@@ -10,9 +10,9 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
-public class RedisPoolDevConfig {
+public class RedisPoolConfig {
 
-    Logger logger = LoggerFactory.getLogger(RedisPoolDevConfig.class);
+    Logger logger = LoggerFactory.getLogger(RedisPoolConfig.class);
 
     @Value("${spring.redis.host}")
     private String host;

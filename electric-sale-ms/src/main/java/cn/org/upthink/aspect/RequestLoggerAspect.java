@@ -1,7 +1,10 @@
 package cn.org.upthink.aspect;
 
+import cn.org.upthink.common.dto.BaseResult;
 import cn.org.upthink.model.logger.RequestLogger;
 import cn.org.upthink.model.logger.ResponseLogger;
+import cn.org.upthink.util.Jacksons;
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiOperation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -10,8 +13,11 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -25,17 +31,18 @@ public class RequestLoggerAspect {
 
     @Around(value = "@annotation(org.springframework.web.bind.annotation.RequestMapping) || @annotation(org.springframework.web.bind.annotation.ResponseBody)")
     public Object aroundMethod(ProceedingJoinPoint joinPoint) throws Throwable {
-        logger.info("RequestLoggerAspect......");
         //do
         Object resp = joinPoint.proceed();
         //done 创建日志类
-        RequestLogger requestLogger = RequestLogger.builder()
-                .apiDesc(getApiDescByRequestSignature(joinPoint))
-                .responseTime(new Date())
-                .build().init();
+        RequestLogger requestLogger = new RequestLogger(getApiDescByRequestSignature(joinPoint), new Date());
         //保存日志
-        System.out.println(requestLogger);
-        logger.info("LOGGING------>\n Request: \n{} \n Response:\n {}",requestLogger,ResponseLogger.with(resp));
+        //System.out.println(resp.toString());
+        BaseResult baseResult = JSON.parseObject(resp.toString(), BaseResult.class);
+        if(Arrays.asList("406","500","1000").contains(baseResult.getCode())){
+            logger.error("LOGGING------>\n Request: \n {} \n Response:\n {}",requestLogger,ResponseLogger.with(resp));
+        }else{
+            logger.info("LOGGING------>\n Request: \n {} \n Response:\n {}",requestLogger,ResponseLogger.with(resp));
+        }
         return resp;
     }
 

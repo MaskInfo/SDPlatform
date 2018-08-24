@@ -2,12 +2,10 @@ package cn.org.upthink.model.logger;
 
 import cn.org.upthink.converter.String2MapConverter;
 import cn.org.upthink.util.UserContext;
-import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,7 +16,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter@Setter@Builder@ToString
+@Getter@Setter@ToString
 public class RequestLogger {
 
     @JsonIgnore
@@ -89,18 +87,20 @@ public class RequestLogger {
         return map;
     }
 
-    public RequestLogger init(){
+    public RequestLogger(String apiDesc, Date responseTime){
         this.url = request.getRequestURL().toString();
         this.method = request.getMethod();
+        this.requestBody = null;
         this.paramsMap = fetchHttpRequestParams();
         this.headers = fetchHttpHeaders();
-        this.requestBody = JSON.toJSONString(UserContext.getRequest().getAttribute(RequestLoggerAttribute.REQUEST_BODY_ID));
         this.requestTime = new Date();
         this.characterEncoding = request.getCharacterEncoding();
         this.contentLength = request.getContentLength();
         this.remoteHost = request.getRemoteHost();
         this.remotePort = request.getRemotePort();
-        return this;
+        this.apiDesc = apiDesc;
+        this.responseTime = responseTime;
     }
+
 
 }

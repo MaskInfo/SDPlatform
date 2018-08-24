@@ -24,6 +24,9 @@ import io.swagger.annotations.ApiParam;
 //import cn.org.upthink.frame.modules.sys.utils.UserUtils;
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 //import org.apache.shiro.authz.annotation.RequiresUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -43,9 +46,6 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/v1")
 public class UserController extends BaseController {
-
-    @Value("${wechat.loginUrl}")
-    private String loginUrl;
 
     @Autowired
     private UserService userService;
@@ -89,7 +89,7 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation(value = "新增User", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @PostMapping(value = "/user", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/user", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public BaseResult<?> addUser(@ApiParam @RequestBody UserFormDTO userFormDTO) {
         try {
             /*User user = new User();
@@ -154,24 +154,17 @@ public class UserController extends BaseController {
     /**
      * 登录
      */
-    public BaseResult<?> login(HttpServletRequest request, String code, @RequestBody UserFormDTO userFormDTO) throws IOException {
-        //code -> session-key open_id
+    @ApiOperation(value = "登录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/login", produces = "application/json;charset=UTF-8", method = RequestMethod.PATCH)
+    public BaseResult<?> login(HttpServletRequest request, String code, @RequestBody UserFormDTO userFormDTO) throws Exception {
         if (StringUtils.isBlank(code)) {
             return getBaseResultSuccess(null, ResponseConstant.INVALID_PARAM.getCode(), ResponseConstant.INVALID_PARAM.getMsg());
         }
 
-        JSONObject ret = JSON.parseObject(HttpClientUtils.INSTANCE.sendGet(loginUrl));
-        if (ret.containsKey("errcode")) {
-            return getBaseResultFail(null, "获取openId失败");
+        String accessToken = userService.login(code, userFormDTO);
+        if(StringUtils.isBlank(accessToken)){
+            return getBaseResultSuccess(ResponseConstant.LOGIN_FAIL.getCode(), ResponseConstant.LOGIN_FAIL.getMsg());
         }
-
-        String session_key = (String) ret.get("session_key");
-        String openid = (String) ret.get("openid");
-        //保存用户信息
-        userService.save(userFormDTO);
-
-        //返回accessToken
-        String accessToken = LoginTokenHelper.setSession(session_key, openid);
 
         return getBaseResultSuccess(accessToken, ResponseConstant.OK.getCode(), ResponseConstant.OK.getMsg());
     }
