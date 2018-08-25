@@ -30,15 +30,30 @@ import java.util.Map;
 /**
 * Created by rover on 2018-06-08.
 */
-@Api(value="questionApi", description = "question的接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Api(value="questionApi", description = "问题Controller", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "/redpacket")
+@RequestMapping(value = "/v1/question")
 public class QuestionController extends BaseController {
 
     @Autowired
     private QuestionService questionService;
 
-    @ApiOperation(value ="获取question详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "问题列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(produces = "application/json;charset=UTF-8")
+    public BaseResult<?> listQuestion(HttpServletRequest request, HttpServletResponse response, @ApiParam QuestionQueryDTO questionQueryDTO) {
+        try {
+            Page<Question> page = questionService.list(questionQueryDTO, request, response);
+            if(page.getList().isEmpty()){
+                return getBaseResultSuccess(new ArrayList<Question>(), "没有查询到有效的数据。");
+            }
+            return getBaseResultSuccess(page, "查询数据成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return getBaseResultFail(null, "查询数据失败");
+    }
+
+    /*@ApiOperation(value ="获取question详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
     })
@@ -123,29 +138,6 @@ public class QuestionController extends BaseController {
             e.printStackTrace();
         }
         return getBaseResultFail(false, "保存失败");
-    }
-
-    @ApiOperation(value = "Question列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @GetMapping(value = "/question", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> listQuestion(HttpServletRequest request, HttpServletResponse response, @ApiParam QuestionQueryDTO questionQueryDTO) {
-        try {
-            Question question = new Question();
-            question.setQuesTitle(questionQueryDTO.getQuesTitle());
-            question.setQuesDetail(questionQueryDTO.getQuesDetail());
-            question.setQuesDate(questionQueryDTO.getQuesDate());
-            question.setQuestioner(questionQueryDTO.getQuestioner());
-            question.setAnswerer(questionQueryDTO.getAnswerer());
-            question.setAnsDate(questionQueryDTO.getAnsDate());
-            question.setAnsDetail(questionQueryDTO.getAnsDetail());
-            Page<Question> page = questionService.findPage(new Page<Question>(request, response), question);
-            if(page.getList().isEmpty()){
-                return getBaseResultSuccess(new ArrayList<Question>(), "没有查询到有效的数据。");
-            }
-            return getBaseResultSuccess(page, "查询数据成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return getBaseResultFail(null, "查询数据失败");
-    }
+    }*/
 
 }

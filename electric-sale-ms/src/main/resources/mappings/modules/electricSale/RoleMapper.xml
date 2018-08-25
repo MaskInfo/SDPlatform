@@ -3,13 +3,11 @@
 <mapper namespace="cn.org.upthink.mapper.RoleMapper">
 
     <sql id="roleDaoColumns">
-        <!--a.id AS "id",
-        a.create_by AS "createBy.id",
+        a.id AS "id",
         a.create_date AS "createDate",
-        a.update_by AS "updateBy.id",
         a.update_date AS "updateDate",
         a.remarks AS "remarks",
-        a.del_flag AS "delFlag",-->
+        a.del_flag AS "delFlag",
 		a.ROLE_NAME AS "roleName",
 		a.ROLE_TYPE AS "roleType"
     </sql>
@@ -25,7 +23,7 @@
         WHERE a.id = #{id}
     </select>
 
-    <select id="find" resultType="cn.org.upthink.entity.Role">
+    <!--<select id="find" resultType="cn.org.upthink.entity.Role">
         SELECT
         <include refid="roleDaoColumns"/>
         FROM tb_role a
@@ -40,7 +38,7 @@
                 ORDER BY a.update_date DESC
             </otherwise>
         </choose>
-    </select>
+    </select>-->
 
     <select id="findList" resultType="cn.org.upthink.entity.Role">
         SELECT
@@ -48,10 +46,6 @@
         FROM tb_role a
         <where>
             a.del_flag = #{delFlag}
-            <!--<if test="name != null and name != ''">
-                AND a.name LIKE
-                <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
-            </if>-->
              <if test="roleName != null and roleName != ''">
                 AND a.ROLE_NAME LIKE CONCAT('%', #{roleName}, '%')
              </if>
@@ -63,25 +57,29 @@
         ORDER BY a.update_date DESC
     </select>
 
+    <select id="getRoleByUserId" resultType="cn.org.upthink.entity.Role">
+        select
+        <include refid="roleDaoColumns"/>
+        from tb_user_role ur join role r
+        on ur.role_id = r.id
+        where ur.user_id = #{userId}
+    </select>
+
     <insert id="insert">
         INSERT INTO tb_role(
-			<!--id,
-			create_by,
+			id,
 			create_date,
-			update_by,
 			update_date,
 			remarks,
-			del_flag,-->
+			del_flag,
 			ROLE_NAME,
 			ROLE_TYPE
         ) VALUES (
-			<!--#{id},
-			#{createBy.id},
+			#{id},
 			#{createDate},
-			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag},-->
+			#{delFlag},
 		    #{roleName},
 		    #{roleType}
         )

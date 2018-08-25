@@ -3,6 +3,7 @@ package cn.org.upthink.inteceptor;
 import cn.org.upthink.exception.BussinessException;
 import cn.org.upthink.model.ResponseConstant;
 import cn.org.upthink.persistence.mybatis.util.StringUtils;
+import cn.org.upthink.util.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;

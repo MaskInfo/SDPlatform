@@ -3,6 +3,7 @@ package cn.org.upthink.aspect;
 import cn.org.upthink.common.dto.BaseResult;
 import cn.org.upthink.model.logger.RequestLogger;
 import cn.org.upthink.model.logger.ResponseLogger;
+import cn.org.upthink.persistence.mybatis.util.StringUtils;
 import cn.org.upthink.util.Jacksons;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiOperation;
@@ -39,9 +40,11 @@ public class RequestLoggerAspect {
         //System.out.println(resp.toString());
         BaseResult baseResult = JSON.parseObject(resp.toString(), BaseResult.class);
         if(Arrays.asList("406","500","1000").contains(baseResult.getCode())){
-            logger.error("LOGGING------>\n Request: \n {} \n Response:\n {}",requestLogger,ResponseLogger.with(resp));
+            logger.error("LOGGING | ERROR \n REQUEST | HEADER {} \n REQUEST | PARAM {} \n RESPONSE | RESULT {}",
+                    requestLogger.getHeaders(),requestLogger.getRequestBody(), StringUtils.deleteWhitespace(resp.toString()));
         }else{
-            logger.info("LOGGING------>\n Request: \n {} \n Response:\n {}",requestLogger,ResponseLogger.with(resp));
+            logger.info("LOGGING | INFO \n REQUEST | HEADER {} \n REQUEST | PARAM {} \n RESPONSE | RESULT {}",
+                    requestLogger.getHeaders(),requestLogger.getRequestBody(), StringUtils.deleteWhitespace(resp.toString()));
         }
         return resp;
     }

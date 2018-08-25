@@ -42,118 +42,14 @@ import java.util.Map;
 /**
  * Created by rover on 2018-06-08.
  */
-@Api(value = "userApi", description = "user的接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Api(value = "userApi", description = "用户Controller", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v1/user")
 public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
 
-    @ApiOperation(value = "获取user详细信息", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
-    })
-    @GetMapping(value = "/user/{id}", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> findUser(@PathVariable("id") String id) {
-        User user = null;
-        try {
-            user = userService.get(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (user != null) {
-            return getBaseResultSuccess(user, "有效对象");
-        } else {
-            return getBaseResultFail(null, "无效的id，没有获取到对象");
-        }
-    }
-
-    @ApiOperation(value = "删除User信息", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
-    })
-    @DeleteMapping(value = "/user/{id}", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> deleteUser(@PathVariable("id") String id) {
-        User user = null;
-        try {
-            user = userService.get(id);
-            if (user != null) {
-                userService.delete(user);
-                return getBaseResultSuccess(true, "已成功删除User对象");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return getBaseResultFail(false, "无效的id，没有删除User对象");
-    }
-
-    @ApiOperation(value = "新增User", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @RequestMapping(value = "/user", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
-    public BaseResult<?> addUser(@ApiParam @RequestBody UserFormDTO userFormDTO) {
-        try {
-            /*User user = new User();
-            user.setHeadImg(userFormDTO.getHeadImg());
-            user.setOpenId(userFormDTO.getOpenId());
-            user.setNickName(userFormDTO.getNickName());
-            user.setUserName(userFormDTO.getUserName());
-            userService.save(user);*/
-            return getBaseResultSuccess(true, "保存User成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return getBaseResultFail(false, "保存失败");
-    }
-
-    @ApiOperation(value = "更新User", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
-    })
-    @PutMapping(value = "/user", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> updateUser(
-            @RequestParam(value = "id", required = true, defaultValue = "") String id,
-            @ApiParam @RequestBody UserFormDTO userFormDTO) {
-        try {
-            if (userService.get(id) == null) {
-                return getBaseResultFail(false, "操作失败，不存在的User。请传入有效的User的ID。");
-            }
-            User user = new User();
-            user.setId(id);
-            user.setHeadImg(userFormDTO.getHeadImg());
-            user.setOpenId(userFormDTO.getOpenId());
-            user.setNickName(userFormDTO.getNickName());
-            user.setUserName(userFormDTO.getUserName());
-            userService.save(user);
-            return getBaseResultSuccess(true, "保存User成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return getBaseResultFail(false, "保存失败");
-    }
-
-    @ApiOperation(value = "User列表查询", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @GetMapping(value = "/user", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> listUser(HttpServletRequest request, HttpServletResponse response, @ApiParam UserQueryDTO userQueryDTO) {
-        try {
-            User user = new User();
-            user.setHeadImg(userQueryDTO.getHeadImg());
-            user.setOpenId(userQueryDTO.getOpenId());
-            user.setNickName(userQueryDTO.getNickName());
-            user.setUserName(userQueryDTO.getUserName());
-            Page<User> page = userService.findPage(new Page<User>(request, response), user);
-            if (page.getList().isEmpty()) {
-                return getBaseResultSuccess(new ArrayList<User>(), "没有查询到有效的数据。");
-            }
-            return getBaseResultSuccess(page, "查询数据成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return getBaseResultFail(null, "查询数据失败");
-    }
-
-    /**
-     * 登录
-     */
     @ApiOperation(value = "登录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @RequestMapping(value = "/login", produces = "application/json;charset=UTF-8", method = RequestMethod.PATCH)
     public BaseResult<?> login(HttpServletRequest request, String code, @RequestBody UserFormDTO userFormDTO) throws Exception {

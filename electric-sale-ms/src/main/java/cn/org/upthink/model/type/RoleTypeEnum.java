@@ -1,5 +1,6 @@
 package cn.org.upthink.model.type;
 
+import cn.org.upthink.entity.Role;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 
@@ -28,5 +29,6 @@ public enum RoleTypeEnum {
         }
         throw new IllegalArgumentException("无效的roleType");
     }
+
 
 }

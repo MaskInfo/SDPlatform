@@ -39,6 +39,9 @@ public class ExpertQueryDTO extends BaseQueryDTO implements Serializable {
     @ApiModelProperty(value="审核时间", name="auditDate", required=false)
     private String auditDate;
 
+    @ApiModelProperty(value="用户ID", name="userId", required=true)
+    private String userId;
+
     /**手动增加getter,setter*/
 
 }

@@ -1,9 +1,11 @@
 package cn.org.upthink.service;
 
+import cn.org.upthink.entity.Role;
 import cn.org.upthink.exception.BussinessException;
 import cn.org.upthink.helper.LoginTokenHelper;
 import cn.org.upthink.model.ResponseConstant;
 import cn.org.upthink.model.dto.UserFormDTO;
+import cn.org.upthink.model.type.RoleTypeEnum;
 import cn.org.upthink.persistence.mybatis.dto.Page;
 import cn.org.upthink.persistence.mybatis.service.BaseCrudService;
 import cn.org.upthink.persistence.mybatis.util.StringUtils;
@@ -32,9 +34,6 @@ public class UserService extends BaseCrudService<UserMapper, User> {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private UserMapper userMapper;
-
     @Value("${wechat.loginUrl}")
     private String loginUrl;
 
@@ -44,13 +43,13 @@ public class UserService extends BaseCrudService<UserMapper, User> {
     }
 
     @Transactional(readOnly = false)
-    public void saveOrUpdate(User user) {
-        if(Objects.nonNull(user.getId())){
-            user.preUpdate();
-            dao.update(user);
-        }else{
+    public void save(User user) {
+        if(StringUtils.isBlank(user.getId())){
             user.preInsert();
             dao.insert(user);
+        }else{
+            user.preUpdate();
+            dao.update(user);
         }
     }
 
@@ -70,16 +69,36 @@ public class UserService extends BaseCrudService<UserMapper, User> {
         String openid = (String) ret.get("openid");
 
         //保存用户信息
-        User user = new User();
-        user.setOpenId(openid);
-        User u = userMapper.get(user);
-        if(Objects.nonNull(u)){
-            user = u;
-        }
-        BeanUtils.copyProperties(userFormDTO, user, "openId");
+        User user = this.saveUser(userFormDTO, openid);
 
         //返回accessToken
-        return LoginTokenHelper.setSession(session_key, openid);
+        return LoginTokenHelper.setSession(session_key, openid, user);
 
+    }
+
+    @Transactional(readOnly = false)
+    public User saveUser(UserFormDTO userFormDTO, String openid) {
+        User user = new User();
+        user.setOpenId(openid);
+        User dbUser = dao.get(user);
+        if(Objects.nonNull(dbUser)){
+            BeanUtils.copyProperties(dbUser, user);
+        }
+        BeanUtils.copyProperties(userFormDTO, user, "openId");
+        this.save(user);
+
+        //设置新用户角色
+        if(Objects.isNull(dbUser)){
+            Role role = RoleService.getRole(RoleTypeEnum.NORMAL);
+            user.setRole(role);
+            this.insertUser_Role(user);
+        }
+
+        return user;
+    }
+
+    @Transactional(readOnly = false)
+    public void insertUser_Role(User user){
+        dao.insertUser_Role(user);
     }
 }

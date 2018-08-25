@@ -33,8 +33,8 @@ public class Question extends BaseDataEntity<Question> {
     private Date quesDate;
     @TableField(name = "ans_date",isQuery = true,required = true,remark = "回答日期")
     private Date ansDate;
-    @TableField(name = "isAnswer",isQuery = true,required = true,remark = "是否回答")
+    @TableField(name = "is_answer",isQuery = true,required = true,remark = "是否回答")
     private boolean isAnswer;
-    @TableField(name = "isPay",isQuery = true,required = true,remark = "是否支付")
+    @TableField(name = "is_pay",isQuery = true,required = true,remark = "是否支付")
     private boolean isPay;
 }

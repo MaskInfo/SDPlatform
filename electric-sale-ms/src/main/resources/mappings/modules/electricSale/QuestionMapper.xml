@@ -3,13 +3,11 @@
 <mapper namespace="cn.org.upthink.mapper.QuestionMapper">
 
     <sql id="questionDaoColumns">
-        <!--a.id AS "id",
-        a.create_by AS "createBy.id",
+        a.id AS "id",
         a.create_date AS "createDate",
-        a.update_by AS "updateBy.id",
         a.update_date AS "updateDate",
         a.remarks AS "remarks",
-        a.del_flag AS "delFlag",-->
+        a.del_flag AS "delFlag",
 		a.QUES_TITLE AS "quesTitle",
 		a.QUES_DETAIL AS "quesDetail",
 		a.QUES_DATE AS "quesDate",
@@ -30,7 +28,7 @@
         WHERE a.id = #{id}
     </select>
 
-    <select id="find" resultType="cn.org.upthink.entity.Question">
+    <!--<select id="find" resultType="cn.org.upthink.entity.Question">
         SELECT
         <include refid="questionDaoColumns"/>
         FROM tb_question a
@@ -45,7 +43,7 @@
                 ORDER BY a.update_date DESC
             </otherwise>
         </choose>
-    </select>
+    </select>-->
 
     <select id="findList" resultType="cn.org.upthink.entity.Question">
         SELECT
@@ -53,10 +51,6 @@
         FROM tb_question a
         <where>
             a.del_flag = #{delFlag}
-            <!--<if test="name != null and name != ''">
-                AND a.name LIKE
-                <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
-            </if>-->
              <if test="quesTitle != null and quesTitle != ''">
                 AND a.QUES_TITLE LIKE CONCAT('%', #{quesTitle}, '%')
              </if>
@@ -78,6 +72,12 @@
              <if test="ansDetail != null and ansDetail != ''">
                 AND a.ANS_DETAIL LIKE CONCAT('%', #{ansDetail}, '%')
              </if>
+             <if test="isPay">
+                AND a.is_pay = #{isPay}
+             </if>
+            <if test="isAnswer">
+                AND a.is_answer = #{isAnswer}
+            </if>
 		${sqlMap.dsf}
         </where>
         ORDER BY a.update_date DESC
@@ -85,13 +85,11 @@
 
     <insert id="insert">
         INSERT INTO tb_question(
-			<!--id,
-			create_by,
+			id,
 			create_date,
-			update_by,
 			update_date,
 			remarks,
-			del_flag,-->
+			del_flag,
 			QUES_TITLE,
 			QUES_DETAIL,
 			QUES_DATE,
@@ -100,13 +98,11 @@
 			ANS_DATE,
 			ANS_DETAIL
         ) VALUES (
-			<!--#{id},
-			#{createBy.id},
+			#{id},
 			#{createDate},
-			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag},-->
+			#{delFlag},
 		    #{quesTitle},
 		    #{quesDetail},
 		    #{quesDate},

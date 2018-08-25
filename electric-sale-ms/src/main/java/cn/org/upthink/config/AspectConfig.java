@@ -13,8 +13,8 @@ public class AspectConfig {
     public RequestLoggerAspect requestLoggerAspect(){
         return new RequestLoggerAspect();
     }
-    /*@Bean
+    @Bean
     public RequestLoggerFilter requestLoggerFilter(){
         return new RequestLoggerFilter();
-    }*/
+    }
 }

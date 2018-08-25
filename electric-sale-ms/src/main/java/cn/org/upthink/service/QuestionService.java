@@ -1,15 +1,23 @@
 package cn.org.upthink.service;
 
+import cn.org.upthink.entity.User;
+import cn.org.upthink.helper.LoginTokenHelper;
+import cn.org.upthink.model.dto.QuestionQueryDTO;
+import cn.org.upthink.model.dto.UserFormDTO;
 import cn.org.upthink.persistence.mybatis.dto.Page;
 import cn.org.upthink.persistence.mybatis.service.BaseCrudService;
 import cn.org.upthink.persistence.mybatis.util.StringUtils;
 //import cn.org.upthink.frame.modules.sys.utils.UserUtils;
 import cn.org.upthink.mapper.QuestionMapper;
 import cn.org.upthink.entity.Question;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 @Service
@@ -23,12 +31,6 @@ public class QuestionService extends BaseCrudService<QuestionMapper, Question> {
 
     @Transactional(readOnly = false)
     public void save(Question question) {
-        // 如果没有审核权限，则将当前内容改为待审核状态
-        /*if (!UserUtils.getSubject().isPermitted("school:question:audit")){
-            question.setDelFlag(Question.DEL_FLAG_AUDIT);
-        }*/
-        //question.setUpdateBy(UserUtils.getUser());
-        question.setUpdateDate(new Date());
         if (StringUtils.isBlank(question.getId())){
             question.preInsert();
             dao.insert(question);
@@ -43,4 +45,13 @@ public class QuestionService extends BaseCrudService<QuestionMapper, Question> {
         super.delete(question);
     }
 
+    public Page<Question> list(QuestionQueryDTO questionQueryDTO, HttpServletRequest request, HttpServletResponse response) {
+        User user = LoginTokenHelper.getUserInfo(request);
+
+        Question question = new Question();
+        question.setQuestioner(user);
+        question.setPay(true);
+
+        return this.findPage(new Page<Question>(request, response), question);
+    }
 }

@@ -24,5 +24,7 @@ public class RequestLoggerFilter extends OncePerRequestFilter {
             request.setAttribute(RequestLoggerAttribute.REQUEST_BODY_ID,requestBodyStr);
         }
         super.doFilter(wrapperRequest,response,filterChain);
+
+
     }
 }

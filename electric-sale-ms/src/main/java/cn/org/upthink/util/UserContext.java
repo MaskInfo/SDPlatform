@@ -14,4 +14,5 @@ public final class UserContext {
     public static HttpServletResponse getResponse() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
     }
+
 }

@@ -7,4 +7,6 @@ import cn.org.upthink.persistence.mybatis.annotation.MyBatisDao;
 @MyBatisDao
 public interface UserMapper extends CrudDao<User> {
 
+    void insertUser_Role(User user);
+
 }

@@ -1,7 +1,6 @@
 package cn.org.upthink.web.controller;
 
 import cn.org.upthink.model.dto.ExpertFormDTO;
-import cn.org.upthink.model.dto.ExpertQueryDTO;
 import cn.org.upthink.persistence.mybatis.dto.Page;
 import cn.org.upthink.web.BaseController;
 import cn.org.upthink.common.dto.BaseResult;
@@ -14,9 +13,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-//import cn.org.upthink.frame.modules.sys.utils.UserUtils;
-//import org.apache.shiro.authz.annotation.RequiresPermissions;
-//import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -30,19 +26,46 @@ import java.util.Map;
 /**
 * Created by rover on 2018-06-08.
 */
-@Api(value="expertApi", description = "expert的接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Api(value="expertApi", description = "专家Controller", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "/redpacket")
+@RequestMapping(value = "/v1/expert")
 public class ExpertController extends BaseController {
 
     @Autowired
     private ExpertService expertService;
 
-    @ApiOperation(value ="获取expert详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value="专家申请", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
+    public BaseResult<?> applyExpert(HttpServletRequest request, @ApiParam @RequestBody ExpertFormDTO expertFormDTO) {
+        try {
+            expertService.apply(expertFormDTO, request);
+            return getBaseResultSuccess(true, "保存Expert成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return getBaseResultFail(false, "保存失败");
+    }
+
+    @ApiOperation(value = "专家列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
+    public BaseResult<?> listExpert(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Page<Expert> page = expertService.findPage(new Page<Expert>(request, response), new Expert());
+            if(page.getList().isEmpty()){
+                return getBaseResultSuccess(new ArrayList<Expert>(), "没有查询到有效的数据。");
+            }
+            return getBaseResultSuccess(page, "查询数据成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return getBaseResultFail(null, "查询数据失败");
+    }
+
+    @ApiOperation(value ="专家详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
     })
-    @GetMapping(value = "/expert/{id}", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/{id}", produces = "application/json;charset=UTF-8")
     public BaseResult<?> findExpert(@PathVariable("id") String id) {
         Expert expert = null;
         try {
@@ -57,48 +80,8 @@ public class ExpertController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "删除Expert信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
-    })
-    @DeleteMapping(value = "/expert/{id}", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> deleteExpert(@PathVariable("id") String id) {
-        Expert expert = null;
-        try {
-            expert = expertService.get(id);
-            if(expert!=null){
-                expertService.delete(expert);
-                return getBaseResultSuccess(true, "已成功删除Expert对象");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return getBaseResultFail(false, "无效的id，没有删除Expert对象");
-    }
 
-    @ApiOperation(value="新增Expert", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @PostMapping(value = "/expert", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> addExpert(@ApiParam @RequestBody ExpertFormDTO expertFormDTO) {
-        try {
-            Expert expert = new Expert();
-            expert.setExpertResume(expertFormDTO.getExpertResume());
-            expert.setExpertName(expertFormDTO.getExpertName());
-            expert.setExpertDetail(expertFormDTO.getExpertDetail());
-            expert.setTelephone(expertFormDTO.getTelephone());
-            expert.setQuizPrice(expertFormDTO.getQuizPrice());
-            expert.setAuditorId(expertFormDTO.getAuditorId());
-            expert.setState(expertFormDTO.getState());
-            expert.setEmail(expertFormDTO.getEmail());
-            expert.setAuditDate(expertFormDTO.getAuditDate());
-            expertService.save(expert);
-            return getBaseResultSuccess(true, "保存Expert成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return getBaseResultFail(false, "保存失败");
-    }
-
-    @ApiOperation(value = "更新Expert", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    /*@ApiOperation(value = "更新Expert", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
     })
@@ -127,31 +110,7 @@ public class ExpertController extends BaseController {
             e.printStackTrace();
         }
         return getBaseResultFail(false, "保存失败");
-    }
+    }*/
 
-    @ApiOperation(value = "Expert列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @GetMapping(value = "/expert", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> listExpert(HttpServletRequest request, HttpServletResponse response, @ApiParam ExpertQueryDTO expertQueryDTO) {
-        try {
-            Expert expert = new Expert();
-            expert.setExpertResume(expertQueryDTO.getExpertResume());
-            expert.setExpertName(expertQueryDTO.getExpertName());
-            expert.setExpertDetail(expertQueryDTO.getExpertDetail());
-            expert.setTelephone(expertQueryDTO.getTelephone());
-            expert.setQuizPrice(expertQueryDTO.getQuizPrice());
-            expert.setAuditorId(expertQueryDTO.getAuditorId());
-            expert.setState(expertQueryDTO.getState());
-            expert.setEmail(expertQueryDTO.getEmail());
-            expert.setAuditDate(expertQueryDTO.getAuditDate());
-            Page<Expert> page = expertService.findPage(new Page<Expert>(request, response), expert);
-            if(page.getList().isEmpty()){
-                return getBaseResultSuccess(new ArrayList<Expert>(), "没有查询到有效的数据。");
-            }
-            return getBaseResultSuccess(page, "查询数据成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return getBaseResultFail(null, "查询数据失败");
-    }
 
 }

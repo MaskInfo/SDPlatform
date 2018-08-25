@@ -3,13 +3,11 @@
 <mapper namespace="cn.org.upthink.mapper.ExpertMapper">
 
     <sql id="expertDaoColumns">
-        <!--a.id AS "id",
-        a.create_by AS "createBy.id",
+        a.id AS "id",
         a.create_date AS "createDate",
-        a.update_by AS "updateBy.id",
         a.update_date AS "updateDate",
         a.remarks AS "remarks",
-        a.del_flag AS "delFlag",-->
+        a.del_flag AS "delFlag",
 		a.EXPERT_RESUME AS "expertResume",
 		a.EXPERT_NAME AS "expertName",
 		a.EXPERT_DETAIL AS "expertDetail",
@@ -18,7 +16,8 @@
 		a.AUDITORID,
 		a.STATE,
 		a.EMAIL,
-		a.AUDIT_DATE AS "auditDate"
+		a.AUDIT_DATE AS "auditDate",
+		a.user_id as "userId"
     </sql>
 
     <sql id="expertJoins">
@@ -32,7 +31,7 @@
         WHERE a.id = #{id}
     </select>
 
-    <select id="find" resultType="cn.org.upthink.entity.Expert">
+    <!--<select id="find" resultType="cn.org.upthink.entity.Expert">
         SELECT
         <include refid="expertDaoColumns"/>
         FROM tb_expert a
@@ -47,18 +46,27 @@
                 ORDER BY a.update_date DESC
             </otherwise>
         </choose>
-    </select>
+    </select>-->
 
     <select id="findList" resultType="cn.org.upthink.entity.Expert">
         SELECT
-        <include refid="expertDaoColumns"/>
+        a.id AS "id",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",
+        a.EXPERT_RESUME AS "expertResume",
+        a.EXPERT_NAME AS "expertName",
+        a.TELEPHONE,
+        a.QUIZ_PRICE AS "quizPrice",
+        a.AUDITORID,
+        a.STATE,
+        a.EMAIL,
+        a.AUDIT_DATE AS "auditDate",
+        a.user_id as "userId"
         FROM tb_expert a
         <where>
             a.del_flag = #{delFlag}
-            <!--<if test="name != null and name != ''">
-                AND a.name LIKE
-                <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
-            </if>-->
              <if test="expertResume != null and expertResume != ''">
                 AND a.EXPERT_RESUME LIKE CONCAT('%', #{expertResume}, '%')
              </if>
@@ -93,13 +101,11 @@
 
     <insert id="insert">
         INSERT INTO tb_expert(
-			<!--id,
-			create_by,
+			id,
 			create_date,
-			update_by,
 			update_date,
 			remarks,
-			del_flag,-->
+			del_flag,
 			EXPERT_RESUME,
 			EXPERT_NAME,
 			EXPERT_DETAIL,
@@ -108,15 +114,14 @@
 			AUDITORID,
 			STATE,
 			EMAIL,
-			AUDIT_DATE
+			AUDIT_DATE,
+			user_id
         ) VALUES (
-			<!--#{id},
-			#{createBy.id},
+			#{id},
 			#{createDate},
-			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag},-->
+			#{delFlag},
 		    #{expertResume},
 		    #{expertName},
 		    #{expertDetail},
@@ -125,7 +130,8 @@
 		    #{auditorId},
 		    #{state},
 		    #{email},
-		    #{auditDate}
+		    #{auditDate},
+		    #{userId}
         )
     </insert>
 
@@ -141,6 +147,7 @@
 		   <if test="state!=null">STATE = #{state},</if>
 		   <if test="email!=null">EMAIL = #{email},</if>
 		   <if test="auditDate!=null">AUDIT_DATE = #{auditDate},</if>
+		   <if test="userId!=null">user_id = #{userId},</if>
 		</trim>
         WHERE id = #{id}
     </update>

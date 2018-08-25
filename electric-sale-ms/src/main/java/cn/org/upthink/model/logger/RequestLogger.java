@@ -1,7 +1,9 @@
 package cn.org.upthink.model.logger;
 
 import cn.org.upthink.converter.String2MapConverter;
+import cn.org.upthink.persistence.mybatis.util.StringUtils;
 import cn.org.upthink.util.UserContext;
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -90,7 +92,7 @@ public class RequestLogger {
     public RequestLogger(String apiDesc, Date responseTime){
         this.url = request.getRequestURL().toString();
         this.method = request.getMethod();
-        this.requestBody = null;
+        this.requestBody = StringUtils.deleteWhitespace(request.getAttribute(RequestLoggerAttribute.REQUEST_BODY_ID).toString());
         this.paramsMap = fetchHttpRequestParams();
         this.headers = fetchHttpHeaders();
         this.requestTime = new Date();

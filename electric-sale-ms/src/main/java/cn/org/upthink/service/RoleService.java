@@ -1,5 +1,7 @@
 package cn.org.upthink.service;
 
+import cn.org.upthink.model.init.SystemData;
+import cn.org.upthink.model.type.RoleTypeEnum;
 import cn.org.upthink.persistence.mybatis.dto.Page;
 import cn.org.upthink.persistence.mybatis.service.BaseCrudService;
 import cn.org.upthink.persistence.mybatis.util.StringUtils;
@@ -23,12 +25,6 @@ public class RoleService extends BaseCrudService<RoleMapper, Role> {
 
     @Transactional(readOnly = false)
     public void save(Role role) {
-        // 如果没有审核权限，则将当前内容改为待审核状态
-        /*if (!UserUtils.getSubject().isPermitted("school:role:audit")){
-            role.setDelFlag(Role.DEL_FLAG_AUDIT);
-        }*/
-        //role.setUpdateBy(UserUtils.getUser());
-        role.setUpdateDate(new Date());
         if (StringUtils.isBlank(role.getId())){
             role.preInsert();
             dao.insert(role);
@@ -41,6 +37,18 @@ public class RoleService extends BaseCrudService<RoleMapper, Role> {
     @Transactional(readOnly = false)
     public void delete(Role role) {
         super.delete(role);
+    }
+
+    public static Role getRole(RoleTypeEnum roleType){
+        int type = roleType.getType();
+
+        for (Role role : SystemData.INSTANCE.getRoleList()) {
+            if(type == role.getRoleType()){
+                return role;
+            }
+        }
+
+        return null;
     }
 
 }

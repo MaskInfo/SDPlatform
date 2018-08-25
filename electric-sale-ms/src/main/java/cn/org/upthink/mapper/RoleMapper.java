@@ -7,4 +7,5 @@ import cn.org.upthink.persistence.mybatis.annotation.MyBatisDao;
 @MyBatisDao
 public interface RoleMapper extends CrudDao<Role> {
 
+    Role getRoleByUserId(Long userId);
 }
