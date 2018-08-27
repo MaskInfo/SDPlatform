@@ -37,4 +37,6 @@ public class Question extends BaseDataEntity<Question> {
     private boolean isAnswer;
     @TableField(name = "is_pay",isQuery = true,required = true,remark = "是否支付")
     private boolean isPay;
+
+
 }

@@ -51,8 +51,8 @@ public class UserController extends BaseController {
     private UserService userService;
 
     @ApiOperation(value = "登录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @RequestMapping(value = "/login", produces = "application/json;charset=UTF-8", method = RequestMethod.PATCH)
-    public BaseResult<?> login(HttpServletRequest request, String code, @RequestBody UserFormDTO userFormDTO) throws Exception {
+    @RequestMapping(value = "/login/{code}", produces = "application/json;charset=UTF-8", method = RequestMethod.PATCH)
+    public BaseResult<?> login(HttpServletRequest request, @PathVariable String code, @RequestBody UserFormDTO userFormDTO) throws Exception {
         if (StringUtils.isBlank(code)) {
             return getBaseResultSuccess(null, ResponseConstant.INVALID_PARAM.getCode(), ResponseConstant.INVALID_PARAM.getMsg());
         }

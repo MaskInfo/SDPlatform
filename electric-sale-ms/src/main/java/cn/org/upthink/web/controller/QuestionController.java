@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
-* Created by rover on 2018-06-08.
-*/
-@Api(value="questionApi", description = "问题Controller", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+ * Created by rover on 2018-06-08.
+ */
+@Api(value = "questionApi", description = "问题Controller", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
 @RequestMapping(value = "/v1/question")
 public class QuestionController extends BaseController {
@@ -38,19 +38,14 @@ public class QuestionController extends BaseController {
     @Autowired
     private QuestionService questionService;
 
-    @ApiOperation(value = "问题列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @GetMapping(produces = "application/json;charset=UTF-8")
+    @ApiOperation(value = "问题列表查询", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     public BaseResult<?> listQuestion(HttpServletRequest request, HttpServletResponse response, @ApiParam QuestionQueryDTO questionQueryDTO) {
-        try {
-            Page<Question> page = questionService.list(questionQueryDTO, request, response);
-            if(page.getList().isEmpty()){
-                return getBaseResultSuccess(new ArrayList<Question>(), "没有查询到有效的数据。");
-            }
-            return getBaseResultSuccess(page, "查询数据成功");
-        } catch (Exception e) {
-            e.printStackTrace();
+        Page<Question> page = questionService.list(questionQueryDTO, request, response);
+        if (page.getList().isEmpty()) {
+            return getBaseResultSuccess(new ArrayList<Question>(), "没有查询到有效的数据。");
         }
-        return getBaseResultFail(null, "查询数据失败");
+        return getBaseResultSuccess(page, "查询数据成功");
     }
 
     /*@ApiOperation(value ="获取question详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

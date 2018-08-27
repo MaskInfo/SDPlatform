@@ -21,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,9 @@ public class UserService extends BaseCrudService<UserMapper, User> {
 
     @Value("${wechat.loginUrl}")
     private String loginUrl;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Transactional(readOnly = false)
     public Page<User> findPage(Page<User> page, User user) {
@@ -72,7 +76,8 @@ public class UserService extends BaseCrudService<UserMapper, User> {
         User user = this.saveUser(userFormDTO, openid);
 
         //返回accessToken
-        return LoginTokenHelper.setSession(session_key, openid, user);
+        userFormDTO.setUserId(user.getId());
+        return LoginTokenHelper.INSTANCE.setSession(stringRedisTemplate, session_key, openid, userFormDTO);
 
     }
 
@@ -80,7 +85,7 @@ public class UserService extends BaseCrudService<UserMapper, User> {
     public User saveUser(UserFormDTO userFormDTO, String openid) {
         User user = new User();
         user.setOpenId(openid);
-        User dbUser = dao.get(user);
+        User dbUser = dao.getByOpenId(user);
         if(Objects.nonNull(dbUser)){
             BeanUtils.copyProperties(dbUser, user);
         }

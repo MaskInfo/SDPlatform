@@ -29,8 +29,8 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler(BussinessException.class)
     @ResponseBody
-    public BaseResult<?> handlerBussinessException(Exception e){
-        return getErrorResult(ResponseConstant.BUSSINESS_EXCEPTION.getCode(), e.getMessage());
+    public BaseResult<?> handlerBussinessException(BussinessException e){
+        return getErrorResult(e.getCode(), e.getMsg());
     }
 
     @ExceptionHandler(Exception.class)

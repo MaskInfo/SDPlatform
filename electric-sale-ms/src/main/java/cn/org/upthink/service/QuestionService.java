@@ -13,6 +13,7 @@ import cn.org.upthink.entity.Question;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,9 @@ import java.util.Date;
 @Service
 @Transactional(readOnly = true)
 public class QuestionService extends BaseCrudService<QuestionMapper, Question> {
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Transactional(readOnly = false)
     public Page<Question> findPage(Page<Question> page, Question question) {
@@ -45,10 +49,13 @@ public class QuestionService extends BaseCrudService<QuestionMapper, Question> {
         super.delete(question);
     }
 
+    @Transactional(readOnly = false)
     public Page<Question> list(QuestionQueryDTO questionQueryDTO, HttpServletRequest request, HttpServletResponse response) {
-        User user = LoginTokenHelper.getUserInfo(request);
+        UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate, request);
 
         Question question = new Question();
+        User user = new User();
+        user.setId(userInfo.getUserId());
         question.setQuestioner(user);
         question.setPay(true);
 

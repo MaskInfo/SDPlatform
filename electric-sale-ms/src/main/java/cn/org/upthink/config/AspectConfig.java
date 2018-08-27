@@ -9,10 +9,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Configuration
 @EnableAspectJAutoProxy
 public class AspectConfig {
-    @Bean
+    /*@Bean
     public RequestLoggerAspect requestLoggerAspect(){
         return new RequestLoggerAspect();
-    }
+    }*/
     @Bean
     public RequestLoggerFilter requestLoggerFilter(){
         return new RequestLoggerFilter();

@@ -9,7 +9,8 @@ public enum ResponseConstant {
     HANDLER_EXCEPTION("500","内部错误"),
     BUSSINESS_EXCEPTION("1000", "业务异常"),
     GET_OPENID_FAIL("1001","获取openID失败"),
-    ACCESSTOKEN_OVERDUE("1002","登录过期"),
+    ACCESSTOKEN_INVALID("1002","token无效"),
+    EXPERT_IS_EXISTED("1003","该专家已存在"),
     LOGIN_FAIL("1002","登录失败");
 
     private String code;

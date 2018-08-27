@@ -10,14 +10,14 @@
         a.del_flag AS "delFlag",
 		a.EXPERT_RESUME AS "expertResume",
 		a.EXPERT_NAME AS "expertName",
-		a.EXPERT_DETAIL AS "expertDetail",
 		a.TELEPHONE,
 		a.QUIZ_PRICE AS "quizPrice",
-		a.AUDITORID,
+		a.AUDITOR_ID as "auditorId",
 		a.STATE,
 		a.EMAIL,
 		a.AUDIT_DATE AS "auditDate",
 		a.user_id as "userId"
+
     </sql>
 
     <sql id="expertJoins">
@@ -26,7 +26,8 @@
 
     <select id="get" resultType="cn.org.upthink.entity.Expert">
         SELECT
-        <include refid="expertDaoColumns"/>
+        <include refid="expertDaoColumns"/>,
+        a.expert_detail as "expertDetail"
         FROM tb_expert a
         WHERE a.id = #{id}
     </select>
@@ -50,20 +51,7 @@
 
     <select id="findList" resultType="cn.org.upthink.entity.Expert">
         SELECT
-        a.id AS "id",
-        a.create_date AS "createDate",
-        a.update_date AS "updateDate",
-        a.remarks AS "remarks",
-        a.del_flag AS "delFlag",
-        a.EXPERT_RESUME AS "expertResume",
-        a.EXPERT_NAME AS "expertName",
-        a.TELEPHONE,
-        a.QUIZ_PRICE AS "quizPrice",
-        a.AUDITORID,
-        a.STATE,
-        a.EMAIL,
-        a.AUDIT_DATE AS "auditDate",
-        a.user_id as "userId"
+        <include refid="expertDaoColumns"/>
         FROM tb_expert a
         <where>
             a.del_flag = #{delFlag}
@@ -98,6 +86,12 @@
         </where>
         ORDER BY a.update_date DESC
     </select>
+    <select id="getByUserId" resultType="cn.org.upthink.entity.Expert">
+        SELECT
+        <include refid="expertDaoColumns"/>
+        FROM tb_expert a
+        where a.user_id = #{userId}
+    </select>
 
     <insert id="insert">
         INSERT INTO tb_expert(
@@ -111,7 +105,7 @@
 			EXPERT_DETAIL,
 			TELEPHONE,
 			QUIZ_PRICE,
-			AUDITORID,
+			AUDITOR_ID,
 			STATE,
 			EMAIL,
 			AUDIT_DATE,
@@ -143,7 +137,7 @@
 		   <if test="expertDetail!=null">EXPERT_DETAIL = #{expertDetail},</if>
 		   <if test="telephone!=null">TELEPHONE = #{telephone},</if>
 		   <if test="quizPrice!=null">QUIZ_PRICE = #{quizPrice},</if>
-		   <if test="auditorId!=null">AUDITORID = #{auditorId},</if>
+		   <if test="auditorId!=null">AUDITOR_ID = #{auditorId},</if>
 		   <if test="state!=null">STATE = #{state},</if>
 		   <if test="email!=null">EMAIL = #{email},</if>
 		   <if test="auditDate!=null">AUDIT_DATE = #{auditDate},</if>

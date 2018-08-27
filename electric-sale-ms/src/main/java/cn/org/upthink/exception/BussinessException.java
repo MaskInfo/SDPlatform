@@ -1,6 +1,7 @@
 package cn.org.upthink.exception;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Copyright (C), 2018-2018
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
  * Description:
  */
 @AllArgsConstructor
+@Getter
 public class BussinessException extends RuntimeException {
     private String code;
 

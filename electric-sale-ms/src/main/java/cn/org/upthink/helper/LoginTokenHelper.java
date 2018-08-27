@@ -19,9 +19,8 @@ import java.util.concurrent.TimeUnit;
  * Date: 2018/8/23 18:16
  * Description:
  */
-public abstract class LoginTokenHelper {
-    @Autowired
-    private static StringRedisTemplate stringRedisTemplate;
+public enum LoginTokenHelper {
+    INSTANCE;
 
     private static final int ACCESSTOKENEXPIRESIN = 3;
 
@@ -30,37 +29,37 @@ public abstract class LoginTokenHelper {
     /**
      * 设置session
      */
-    public static String setSession(String sessionKey, String openId, User user){
+    public String setSession(StringRedisTemplate stringRedisTemplate, String sessionKey, String openId, UserFormDTO userFormDTO){
         String val = String.format("%s#%s", sessionKey, openId);
         String accessToken = getAccessToken();
-        deleteOldToken(accessToken);
+        deleteOldToken(stringRedisTemplate, accessToken);
         stringRedisTemplate.boundValueOps(accessToken).set(val);
         stringRedisTemplate.expire(accessToken, ACCESSTOKENEXPIRESIN, TimeUnit.DAYS);
 
-        user.setRole(null);
-        stringRedisTemplate.boundValueOps(TOKEN_USER_CACHE+accessToken).set(JSON.toJSONString(user));
+        stringRedisTemplate.boundValueOps(TOKEN_USER_CACHE+accessToken).set(JSON.toJSONString(userFormDTO));
         stringRedisTemplate.expire(TOKEN_USER_CACHE+accessToken, ACCESSTOKENEXPIRESIN, TimeUnit.DAYS);
 
         return accessToken;
     }
 
-    private static void deleteOldToken(String accessToken) {
+    private void deleteOldToken(StringRedisTemplate stringRedisTemplate, String accessToken) {
         stringRedisTemplate.delete(accessToken);
         stringRedisTemplate.delete(TOKEN_USER_CACHE+accessToken);
     }
 
-    private static String getAccessToken(){
+    private String getAccessToken(){
         return UUID.randomUUID().toString();
     }
 
-    public static User getUserInfo(HttpServletRequest request){
+    public UserFormDTO getUserInfo(StringRedisTemplate stringRedisTemplate, HttpServletRequest request){
         String accessToken = request.getHeader("accessToken");
 
         if(StringUtils.isNotBlank(accessToken)){
             String userString = stringRedisTemplate.boundValueOps(TOKEN_USER_CACHE + accessToken).get();
-            return JSON.parseObject(userString, User.class);
+            return JSON.parseObject(userString, UserFormDTO.class);
         }
 
         return null;
     }
+
 }

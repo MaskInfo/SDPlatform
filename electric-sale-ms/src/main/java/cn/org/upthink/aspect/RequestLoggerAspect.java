@@ -37,7 +37,7 @@ public class RequestLoggerAspect {
         //done 创建日志类
         RequestLogger requestLogger = new RequestLogger(getApiDescByRequestSignature(joinPoint), new Date());
         //保存日志
-        //System.out.println(resp.toString());
+        System.out.println(resp.toString());
         BaseResult baseResult = JSON.parseObject(resp.toString(), BaseResult.class);
         if(Arrays.asList("406","500","1000").contains(baseResult.getCode())){
             logger.error("LOGGING | ERROR \n REQUEST | HEADER {} \n REQUEST | PARAM {} \n RESPONSE | RESULT {}",

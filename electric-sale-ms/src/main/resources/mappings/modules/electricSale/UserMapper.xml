@@ -78,6 +78,12 @@
         </where>
         ORDER BY a.update_date DESC
     </select>
+    <select id="getByOpenId" resultType="cn.org.upthink.entity.User">
+        SELECT
+        <include refid="userDaoColumns"/>
+        FROM tb_user a
+        where a.open_id = #{openId}
+    </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_user(
