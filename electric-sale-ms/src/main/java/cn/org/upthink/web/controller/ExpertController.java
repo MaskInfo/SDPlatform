@@ -62,7 +62,9 @@ public class ExpertController extends BaseController {
     public BaseResult<?> findExpert(@PathVariable("id") String id) {
         Expert expert = null;
         try {
-            expert = expertService.get(id);
+            expert = new Expert();
+            expert.setId(id);
+            expert = expertService.get(expert);
         } catch (Exception e) {
             e.printStackTrace();
         }

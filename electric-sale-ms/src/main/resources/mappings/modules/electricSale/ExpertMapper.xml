@@ -17,7 +17,39 @@
 		a.EMAIL,
 		a.AUDIT_DATE AS "auditDate",
 		a.user_id as "userId"
+    </sql>
 
+    <sql id="expertIf">
+        <if test="id != null">
+            and a.id = #{id}
+        </if>
+        <if test="expertResume != null and expertResume != ''">
+            AND a.EXPERT_RESUME LIKE CONCAT('%', #{expertResume}, '%')
+        </if>
+        <if test="expertName != null and expertName != ''">
+            AND a.EXPERT_NAME LIKE CONCAT('%', #{expertName}, '%')
+        </if>
+        <if test="expertDetail != null and expertDetail != ''">
+            AND a.EXPERT_DETAIL LIKE CONCAT('%', #{expertDetail}, '%')
+        </if>
+        <if test="telephone != null and telephone != ''">
+            AND a.TELEPHONE LIKE CONCAT('%', #{telephone}, '%')
+        </if>
+        <if test="quizPrice != null and quizPrice != ''">
+            AND a.QUIZ_PRICE LIKE CONCAT('%', #{quizPrice}, '%')
+        </if>
+        <if test="auditorId != null and auditorId != ''">
+            AND a.AUDITORID LIKE CONCAT('%', #{auditorId}, '%')
+        </if>
+        <if test="state != null and state != ''">
+            AND a.STATE LIKE CONCAT('%', #{state}, '%')
+        </if>
+        <if test="email != null and email != ''">
+            AND a.EMAIL LIKE CONCAT('%', #{email}, '%')
+        </if>
+        <if test="auditDate != null and auditDate != ''">
+            AND a.AUDIT_DATE LIKE CONCAT('%', #{auditDate}, '%')
+        </if>
     </sql>
 
     <sql id="expertJoins">
@@ -29,7 +61,9 @@
         <include refid="expertDaoColumns"/>,
         a.expert_detail as "expertDetail"
         FROM tb_expert a
-        WHERE a.id = #{id}
+        <where>
+           <include refid="expertIf"/>
+        </where>
     </select>
 
     <!--<select id="find" resultType="cn.org.upthink.entity.Expert">
@@ -55,42 +89,10 @@
         FROM tb_expert a
         <where>
             a.del_flag = #{delFlag}
-             <if test="expertResume != null and expertResume != ''">
-                AND a.EXPERT_RESUME LIKE CONCAT('%', #{expertResume}, '%')
-             </if>
-             <if test="expertName != null and expertName != ''">
-                AND a.EXPERT_NAME LIKE CONCAT('%', #{expertName}, '%')
-             </if>
-             <if test="expertDetail != null and expertDetail != ''">
-                AND a.EXPERT_DETAIL LIKE CONCAT('%', #{expertDetail}, '%')
-             </if>
-             <if test="telephone != null and telephone != ''">
-                AND a.TELEPHONE LIKE CONCAT('%', #{telephone}, '%')
-             </if>
-             <if test="quizPrice != null and quizPrice != ''">
-                AND a.QUIZ_PRICE LIKE CONCAT('%', #{quizPrice}, '%')
-             </if>
-             <if test="auditorId != null and auditorId != ''">
-                AND a.AUDITORID LIKE CONCAT('%', #{auditorId}, '%')
-             </if>
-             <if test="state != null and state != ''">
-                AND a.STATE LIKE CONCAT('%', #{state}, '%')
-             </if>
-             <if test="email != null and email != ''">
-                AND a.EMAIL LIKE CONCAT('%', #{email}, '%')
-             </if>
-             <if test="auditDate != null and auditDate != ''">
-                AND a.AUDIT_DATE LIKE CONCAT('%', #{auditDate}, '%')
-             </if>
+            <include refid="expertIf"/>
 		${sqlMap.dsf}
         </where>
         ORDER BY a.update_date DESC
-    </select>
-    <select id="getByUserId" resultType="cn.org.upthink.entity.Expert">
-        SELECT
-        <include refid="expertDaoColumns"/>
-        FROM tb_expert a
-        where a.user_id = #{userId}
     </select>
 
     <insert id="insert">

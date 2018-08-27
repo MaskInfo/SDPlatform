@@ -7,5 +7,4 @@ import cn.org.upthink.persistence.mybatis.annotation.MyBatisDao;
 @MyBatisDao
 public interface ExpertMapper extends CrudDao<Expert> {
 
-    Expert getByUserId(Expert expert);
 }

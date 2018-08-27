@@ -7,6 +7,7 @@ import cn.org.upthink.helper.LoginTokenHelper;
 import cn.org.upthink.model.ResponseConstant;
 import cn.org.upthink.model.dto.ExpertFormDTO;
 import cn.org.upthink.model.dto.UserFormDTO;
+import cn.org.upthink.model.type.ExpertStateEnum;
 import cn.org.upthink.model.type.RoleTypeEnum;
 import cn.org.upthink.persistence.mybatis.dto.Page;
 import cn.org.upthink.persistence.mybatis.service.BaseCrudService;
@@ -29,9 +30,6 @@ import java.util.Objects;
 @Service
 @Transactional(readOnly = true)
 public class ExpertService extends BaseCrudService<ExpertMapper, Expert> {
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -63,12 +61,14 @@ public class ExpertService extends BaseCrudService<ExpertMapper, Expert> {
 
         Expert expert = new Expert();
         expert.setUserId(userInfo.getUserId());
+        expert.setState(ExpertStateEnum.AUDIT.getStateCode());
 
-        Expert e = dao.getByUserId(expert);
+        Expert e = dao.get(expert);
         if(Objects.nonNull(e)){
             throw new BussinessException(ResponseConstant.EXPERT_IS_EXISTED.getCode(), ResponseConstant.EXPERT_IS_EXISTED.getMsg());
         }
 
+        expert.setState(ExpertStateEnum.WAIT_AUDIT.getStateCode());
         BeanUtils.copyProperties(expertFormDTO, expert, "userId","state");
         this.save(expert);
 
