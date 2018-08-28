@@ -13,6 +13,7 @@ import cn.org.upthink.entity.Question;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,6 +29,9 @@ public class QuestionService extends BaseCrudService<QuestionMapper, Question> {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Value("${wechat.perparePayUrl}")
+    private String preparePayUrl;
 
     @Transactional(readOnly = false)
     public Page<Question> findPage(Page<Question> page, Question question) {
@@ -60,5 +65,15 @@ public class QuestionService extends BaseCrudService<QuestionMapper, Question> {
         question.setPay(true);
 
         return this.findPage(new Page<Question>(request, response), question);
+    }
+
+    public void save(String userId, String ques_title, String ques_detail) {
+        Question q = new Question();
+        User user = new User();
+        user.setId(userId);
+        q.setQuestioner(user);
+        q.setQuesTitle(ques_title);
+        q.setQuesDetail(ques_detail);
+        this.save(q);
     }
 }

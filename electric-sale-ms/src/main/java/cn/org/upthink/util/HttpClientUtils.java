@@ -10,11 +10,15 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +26,9 @@ import java.util.List;
  */
 public enum HttpClientUtils {
     INSTANCE;
+
+    public final static String XML = "xml";
+    public final static String JSON = "json";
 
     /**
      * get请求
@@ -67,24 +74,23 @@ public enum HttpClientUtils {
      * @return
      * @throws IOException
      */
-    public String sendPost(String url) throws IOException {
+    public String sendPost(String url, String data, String type) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
-        List<NameValuePair> nvps = Lists.newArrayList();
-//        nvps.add(new BasicNameValuePair("username", "vip"));
-//        nvps.add(new BasicNameValuePair("password", "secret"));
-        httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+        List<BasicNameValuePair> parameters = new ArrayList<>();
+        StringEntity postEntity = new StringEntity(data, "UTF-8");
+        if(type.equals(XML)){
+            httpPost.addHeader("Content-Type", "text/xml");
+        }else{
+            httpPost.addHeader("Content-Type", "application/json");
+        }
+        httpPost.setEntity(postEntity);
         CloseableHttpResponse response2 = httpclient.execute(httpPost);
         String responseBody = null;
 
         try {
-            System.out.println(response2.getStatusLine());
-            httpPost.getEntity().getContent();
-            responseBody = response2.getStatusLine().toString();
-            HttpEntity entity2 = response2.getEntity();
-            // do something useful with the response body
-            // and ensure it is fully consumed
-            EntityUtils.consume(entity2);
+            HttpEntity entity = response2.getEntity();
+            responseBody = EntityUtils.toString(entity, "UTF-8");
         } finally {
             response2.close();
         }

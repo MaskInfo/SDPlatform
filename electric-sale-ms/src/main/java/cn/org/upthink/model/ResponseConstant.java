@@ -11,7 +11,9 @@ public enum ResponseConstant {
     GET_OPENID_FAIL("1001","获取openID失败"),
     ACCESSTOKEN_INVALID("1002","token无效"),
     EXPERT_IS_EXISTED("1003","该专家已存在"),
-    LOGIN_FAIL("1002","登录失败");
+    LOGIN_FAIL("1002","登录失败"),
+    PREPARY_FAIL("1003","预支付失败"),
+    PAYTYPE_IS_NULL_OR_ERROR("1004","支付类型错误");
 
     private String code;
     private String msg;

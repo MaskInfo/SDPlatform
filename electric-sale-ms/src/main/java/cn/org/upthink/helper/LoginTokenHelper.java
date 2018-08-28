@@ -62,4 +62,12 @@ public enum LoginTokenHelper {
         return null;
     }
 
+    public String getOpenId(HttpServletRequest request, StringRedisTemplate stringRedisTemplate){
+        String accessToken = request.getHeader("accessToken");
+        if(StringUtils.isNotBlank(accessToken)){
+            String val = stringRedisTemplate.boundValueOps(accessToken).get();
+            return val.split("#")[1];
+        }
+        return null;
+    }
 }
