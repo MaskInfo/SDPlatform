@@ -26,8 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -66,6 +65,7 @@ public class UserService extends BaseCrudService<UserMapper, User> {
     public String login(String code, UserFormDTO userFormDTO) throws Exception {
         //code -> session-key openId
         JSONObject ret = JSON.parseObject(HttpClientUtils.INSTANCE.sendGet(loginUrl + code));
+        System.out.println(JSON.toJSONString(ret));
         if (ret.containsKey("errcode")) {
             throw new BussinessException(ResponseConstant.GET_OPENID_FAIL.getCode(), ResponseConstant.GET_OPENID_FAIL.getMsg());
         }
@@ -95,7 +95,9 @@ public class UserService extends BaseCrudService<UserMapper, User> {
         //设置新用户角色
         if(Objects.isNull(dbUser)){
             Role role = RoleService.getRole(RoleTypeEnum.NORMAL);
-            user.setRole(role);
+            List roleList = new ArrayList();
+            roleList.add(role);
+            user.setRoles(roleList);
             this.insertUser_Role(user);
         }
 

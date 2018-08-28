@@ -58,7 +58,7 @@ public class ExpertController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
     })
-    @GetMapping(value = "/{id}", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/{id}", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     public BaseResult<?> findExpert(@PathVariable("id") String id) {
         Expert expert = null;
         try {

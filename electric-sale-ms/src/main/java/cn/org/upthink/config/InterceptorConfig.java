@@ -13,12 +13,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * Date: 2018/8/24 11:37
  * Description:
  */
-@Configuration
+//@Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(requestHeaderInterceptor()).addPathPatterns("/**").excludePathPatterns("/login");
+        registry.addInterceptor(requestHeaderInterceptor()).addPathPatterns("/**").excludePathPatterns("/login/**");
     }
 
     @Bean

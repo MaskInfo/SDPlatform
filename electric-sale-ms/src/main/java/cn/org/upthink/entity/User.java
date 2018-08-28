@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
@@ -20,7 +22,7 @@ public class User extends BaseDataEntity<User> {
     @TableField(name = "open_id",isQuery = true,required = true,remark = "openId")
     private String openId;
 
-    private Role role;
+    private List<Role> roles;
 
 
 }

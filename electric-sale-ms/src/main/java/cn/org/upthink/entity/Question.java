@@ -30,13 +30,13 @@ public class Question extends BaseDataEntity<Question> {
     @TableField(name = "answerer",isQuery = true,required = true,remark = "回答者")
     private User answerer;
     @TableField(name = "ques_date",isQuery = true,required = true,remark = "提问日期")
-    private Date quesDate;
+    private Date quesDate = new Date();
     @TableField(name = "ans_date",isQuery = true,required = true,remark = "回答日期")
     private Date ansDate;
     @TableField(name = "is_answer",isQuery = true,required = true,remark = "是否回答")
-    private boolean isAnswer;
+    private boolean isAnswer = false;
     @TableField(name = "is_pay",isQuery = true,required = true,remark = "是否支付")
-    private boolean isPay;
+    private boolean isPay = false;
 
 
 }
