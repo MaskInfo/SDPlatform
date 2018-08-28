@@ -43,4 +43,8 @@ public class CourseService extends BaseCrudService<CourseMapper, Course> {
         super.delete(course);
     }
 
+    public void bind(String userId, String courseId) {
+
+        this.dao.bind(userId,courseId);
+    }
 }

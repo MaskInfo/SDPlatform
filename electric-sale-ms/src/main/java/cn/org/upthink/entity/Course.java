@@ -24,4 +24,6 @@ public class Course extends BaseDataEntity<Course> {
     private Integer totalDuration;
     @TableField(name = "course_type",isQuery = true,required = true,remark = "课程类型")
     private Integer courseType;
+
+    private String userId;
 }

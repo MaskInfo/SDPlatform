@@ -33,23 +33,26 @@
         SELECT
         <include refid="courseDaoColumns"/>
         FROM tb_course a
+        <if test="userId != null and userId !=''">
+            join rela_user_course b on a.course_id = b.course_id
+        </if>
         <where>
             a.del_flag = #{delFlag}
             <!--<if test="name != null and name != ''">
                 AND a.name LIKE
                 <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
             </if>-->
-             <if test="salcePrice != null and salcePrice != ''">
+             <if test="salcePrice != null">
                 AND a.SALE_PRICE LIKE CONCAT('%', #{salcePrice}, '%')
              </if>
-             <if test="totalDuration != null and totalDuration != ''">
+             <if test="totalDuration != null">
                 AND a.TOTAL_DURATION LIKE CONCAT('%', #{totalDuration}, '%')
              </if>
              <if test="teachId != null and teachId != ''">
-                AND a.TEACH_ID LIKE CONCAT('%', #{teachId}, '%')
+                AND a.TEACH_ID =#{teachId}
              </if>
-             <if test="courseType != null and courseType != ''">
-                AND a.COURSE_TYPE LIKE CONCAT('%', #{courseType}, '%')
+             <if test="courseType != null and courseType != -1">
+                AND a.COURSE_TYPE = #{courseType}
              </if>
              <if test="courseName != null and courseName != ''">
                 AND a.COURSE_NAME LIKE CONCAT('%', #{courseName}, '%')
@@ -57,9 +60,12 @@
              <if test="courseResume != null and courseResume != ''">
                 AND a.COURSE_RESUME LIKE CONCAT('%', #{courseResume}, '%')
              </if>
-             <if test="basePrice != null and basePrice != ''">
-                AND a.BASE_PRICE LIKE CONCAT('%', #{basePrice}, '%')
+             <if test="basePrice != null ">
+                AND a.BASE_PRICE = #{basePrice}
              </if>
+            <if test="userId != null and userId !=''">
+                AND b.user_id = #{userId}
+            </if>
 		${sqlMap.dsf}
         </where>
         ORDER BY a.update_date DESC
@@ -93,6 +99,11 @@
 		    #{courseResume},
 		    #{basePrice}
         )
+    </insert>
+    <insert id="bind">
+        insert into
+        rela_user_course(user_id,course_id)
+        value (#{userId},#{courseId})
     </insert>
 
     <update id="update">

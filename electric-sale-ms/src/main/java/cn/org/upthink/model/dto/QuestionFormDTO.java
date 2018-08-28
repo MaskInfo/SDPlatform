@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
-@ApiModel(value="Question对象", description="")
+@ApiModel(value="Questionform对象", description="")
 public class QuestionFormDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;

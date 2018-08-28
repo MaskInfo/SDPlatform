@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.upthink.mapper.CourseDirMapper">
+
+    <sql id="courseDirDaoColumns">
+        a.id AS "id",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",
+		a.URL,
+		a.COURSE_TITLE AS "courseTitle",
+		a.DURATION,
+		a.SEQUENCE,
+		a.SCANCOUNT,
+		a.COURSE_ID AS "courseId"
+    </sql>
+
+    <sql id="courseDirJoins">
+        <!--todo-->
+    </sql>
+
+    <select id="get" resultType="cn.org.upthink.entity.CourseDir">
+        SELECT
+        <include refid="courseDirDaoColumns"/>
+        FROM tb_courseDir a
+        WHERE a.id = #{id} and del_flag = ${@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL}
+    </select>
+
+
+    <select id="findList" resultType="cn.org.upthink.entity.CourseDir">
+        SELECT
+        <include refid="courseDirDaoColumns"/>
+        FROM tb_courseDir a
+        <where>
+            a.del_flag = #{delFlag}
+            <!--<if test="name != null and name != ''">
+                AND a.name LIKE
+                <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+            </if>-->
+             <if test="url != null and url != ''">
+                AND a.URL LIKE CONCAT('%', #{url}, '%')
+             </if>
+             <if test="courseTitle != null and courseTitle != ''">
+                AND a.COURSE_TITLE LIKE CONCAT('%', #{courseTitle}, '%')
+             </if>
+             <if test="duration != null and duration != ''">
+                AND a.DURATION LIKE CONCAT('%', #{duration}, '%')
+             </if>
+             <if test="sequence != null and sequence != ''">
+                AND a.SEQUENCE LIKE CONCAT('%', #{sequence}, '%')
+             </if>
+             <if test="scanCount != null and scanCount != ''">
+                AND a.SCANCOUNT LIKE CONCAT('%', #{scanCount}, '%')
+             </if>
+             <if test="courseId != null and courseId != ''">
+                AND a.COURSE_ID LIKE CONCAT('%', #{courseId}, '%')
+             </if>
+		${sqlMap.dsf}
+        </where>
+        ORDER BY a.update_date DESC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO tb_courseDir(
+			id,
+			create_date,
+			update_date,
+			remarks,
+			del_flag,
+			URL,
+			COURSE_TITLE,
+			DURATION,
+			SEQUENCE,
+			SCANCOUNT,
+			COURSE_ID
+        ) VALUES (
+			#{id},
+			#{createDate},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+		    #{url},
+		    #{courseTitle},
+		    #{duration},
+		    #{sequence},
+		    #{scanCount},
+		    #{courseId}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_courseDir
+        <trim prefix="SET" suffixOverrides=",">
+		   <if test="url!=null">URL = #{url},</if>
+		   <if test="courseTitle!=null">COURSE_TITLE = #{courseTitle},</if>
+		   <if test="duration!=null">DURATION = #{duration},</if>
+		   <if test="sequence!=null">SEQUENCE = #{sequence},</if>
+		   <if test="scanCount!=null">SCANCOUNT = #{scanCount},</if>
+		   <if test="courseId!=null">COURSE_ID = #{courseId},</if>
+		</trim>
+        WHERE id = #{id}
+    </update>
+
+    <update id="delete">
+        UPDATE tb_courseDir SET del_flag = #{DEL_FLAG_DELETE} WHERE id = #{id}
+    </update>
+
+</mapper>

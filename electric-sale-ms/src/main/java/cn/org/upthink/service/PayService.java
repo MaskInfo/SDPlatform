@@ -49,6 +49,8 @@ public class PayService {
 
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private CourseService courseService;
 
     @Transactional(readOnly = false)
     public Map<String, String> preparePay(HttpServletRequest request, PayFormDto payFormDto) throws Exception {
@@ -123,6 +125,7 @@ public class PayService {
             questionService.save(question);
         }else{
             //TODO 绑定课程
+            //todo courseService.bind(userid,courseid);
         }
     }
 }

@@ -125,9 +125,24 @@ public class CourseController extends BaseController {
         course.setCourseName(courseQueryDTO.getCourseName());
         course.setCourseResume(courseQueryDTO.getCourseResume());
         course.setBasePrice(courseQueryDTO.getBasePrice());
+        course.setUserId(courseQueryDTO.getUserId());
         Page<Course> page = courseService.findPage(new Page<Course>(request, response), course);
 
         return getBaseResultSuccess(page, "查询数据成功");
     }
 
+    /*@ApiOperation(value = "用户绑定课程", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "courseId", value = "课程Id", required = true, dataType = "String")
+    })
+    @PutMapping(value = "/course/bind", produces = "application/json;charset=UTF-8")
+    public BaseResult<?> updateCourse(
+            @RequestParam(value = "userId", required = true, defaultValue = "") String userId,
+            @RequestParam(value = "courseId", required = true, defaultValue = "") String courseId) {
+
+        courseService.bind(userId,courseId);
+        return getBaseResultSuccess(null, "保存Course成功");
+    }
+*/
 }

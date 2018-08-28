@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
-@ApiModel(value="Course对象", description="")
-public class CourseQueryDTO implements Serializable {
+@ApiModel(value="Coursequery对象", description="")
+public class CourseQueryDTO extends BaseQueryDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,6 +34,9 @@ public class CourseQueryDTO implements Serializable {
 
     @ApiModelProperty(value="基础价格", name="basePrice", required=false)
     private BigDecimal basePrice;
+
+    @ApiModelProperty(value="用户id", name="userId", required=false)
+    private String userId;
 
     /**手动增加getter,setter*/
 

@@ -11,7 +11,7 @@ import org.springframework.beans.BeanUtils;
 
 @Getter
 @Setter
-@ApiModel(value="User对象", description="")
+@ApiModel(value="Userform对象", description="")
 public class UserFormDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
