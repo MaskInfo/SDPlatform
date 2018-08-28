@@ -56,7 +56,7 @@ public class SwaggerTemplate {
     public Docket configure(SwaggerApiInfo info, TypeResolver typeResolver) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("cn.org.upthink.controller"))
+                .apis(RequestHandlerSelectors.basePackage("cn.org.upthink.web.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .pathMapping("/")

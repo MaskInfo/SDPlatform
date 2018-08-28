@@ -92,7 +92,7 @@
         on a.questioner_id = u1.id
         join tb_user u2
         on a.answer_id = u2.id
-        WHERE a.id = #{id}
+        WHERE a.id = #{id} and del_flag = ${@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL}
     </select>
 
     <insert id="insert">

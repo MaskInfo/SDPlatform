@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.upthink.mapper.CourseMapper">
+
+    <sql id="courseDaoColumns">
+       a.id AS "id",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",
+		a.SALE_PRICE AS "salcePrice",
+		a.TOTAL_DURATION AS "totalDuration",
+		a.TEACH_ID AS "teachId",
+		a.COURSE_TYPE AS "courseType",
+		a.COURSE_NAME AS "courseName",
+		a.COURSE_RESUME AS "courseResume",
+		a.BASE_PRICE AS "basePrice"
+    </sql>
+
+    <sql id="courseJoins">
+        <!--todo-->
+    </sql>
+
+    <select id="get" resultType="cn.org.upthink.entity.Course">
+        SELECT
+        <include refid="courseDaoColumns"/>
+        FROM tb_course a
+        WHERE a.id = #{id} and del_flag = ${@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL}
+    </select>
+
+
+    <select id="findList" resultType="cn.org.upthink.entity.Course">
+        SELECT
+        <include refid="courseDaoColumns"/>
+        FROM tb_course a
+        <where>
+            a.del_flag = #{delFlag}
+            <!--<if test="name != null and name != ''">
+                AND a.name LIKE
+                <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+            </if>-->
+             <if test="salcePrice != null and salcePrice != ''">
+                AND a.SALE_PRICE LIKE CONCAT('%', #{salcePrice}, '%')
+             </if>
+             <if test="totalDuration != null and totalDuration != ''">
+                AND a.TOTAL_DURATION LIKE CONCAT('%', #{totalDuration}, '%')
+             </if>
+             <if test="teachId != null and teachId != ''">
+                AND a.TEACH_ID LIKE CONCAT('%', #{teachId}, '%')
+             </if>
+             <if test="courseType != null and courseType != ''">
+                AND a.COURSE_TYPE LIKE CONCAT('%', #{courseType}, '%')
+             </if>
+             <if test="courseName != null and courseName != ''">
+                AND a.COURSE_NAME LIKE CONCAT('%', #{courseName}, '%')
+             </if>
+             <if test="courseResume != null and courseResume != ''">
+                AND a.COURSE_RESUME LIKE CONCAT('%', #{courseResume}, '%')
+             </if>
+             <if test="basePrice != null and basePrice != ''">
+                AND a.BASE_PRICE LIKE CONCAT('%', #{basePrice}, '%')
+             </if>
+		${sqlMap.dsf}
+        </where>
+        ORDER BY a.update_date DESC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO tb_course(
+			id,
+			create_date,
+			update_date,
+			remarks,
+			del_flag,
+			SALE_PRICE,
+			TOTAL_DURATION,
+			TEACH_ID,
+			COURSE_TYPE,
+			COURSE_NAME,
+			COURSE_RESUME,
+			BASE_PRICE
+        ) VALUES (
+			#{id},
+			#{createDate},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+		    #{salcePrice},
+		    #{totalDuration},
+		    #{teachId},
+		    #{courseType},
+		    #{courseName},
+		    #{courseResume},
+		    #{basePrice}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_course
+        <trim prefix="SET" suffixOverrides=",">
+		   <if test="salcePrice!=null">SALE_PRICE = #{salcePrice},</if>
+		   <if test="totalDuration!=null">TOTAL_DURATION = #{totalDuration},</if>
+		   <if test="teachId!=null">TEACH_ID = #{teachId},</if>
+		   <if test="courseType!=null">COURSE_TYPE = #{courseType},</if>
+		   <if test="courseName!=null">COURSE_NAME = #{courseName},</if>
+		   <if test="courseResume!=null">COURSE_RESUME = #{courseResume},</if>
+		   <if test="basePrice!=null">BASE_PRICE = #{basePrice},</if>
+		</trim>
+        WHERE id = #{id}
+    </update>
+
+    <update id="delete">
+        UPDATE tb_course SET del_flag = #{DEL_FLAG_DELETE} WHERE id = #{id}
+    </update>
+
+</mapper>

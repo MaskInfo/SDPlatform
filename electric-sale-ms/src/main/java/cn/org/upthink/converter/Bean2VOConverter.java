@@ -13,4 +13,5 @@ public class Bean2VOConverter {
         vo.setLoopType(LoopTypeEnum.getSelf(bean.getLoopType()).name());
         return vo;
     }
+
 }

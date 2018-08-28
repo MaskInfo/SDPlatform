@@ -41,6 +41,7 @@ public class ResettableStreamHttpServletRequest extends HttpServletRequestWrappe
             // 已经填入则直接返回
             resultBytes = Arrays.copyOf(requestBody, requestBody.length);
         } else {
+            System.out.println("获取requestBody");
             // 未填入则进行处理
             InputStream inputStream = super.getInputStream();
             byte[] buffer = new byte[4096];

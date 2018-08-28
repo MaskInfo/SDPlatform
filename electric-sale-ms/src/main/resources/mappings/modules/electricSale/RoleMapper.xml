@@ -20,7 +20,7 @@
         SELECT
         <include refid="roleDaoColumns"/>
         FROM tb_role a
-        WHERE a.id = #{id}
+        WHERE a.id = #{id} and del_flag = ${@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL}
     </select>
 
     <!--<select id="find" resultType="cn.org.upthink.entity.Role">

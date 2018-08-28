@@ -23,7 +23,7 @@
         SELECT
         <include refid="${mapper.lowerCaseEntitySimpleName}DaoColumns"/>
         FROM ${mapper.tableName} a
-        WHERE a.id = ${r"#{"}${mapper.id}${r"}"}
+        WHERE a.id = ${r"#{"}${mapper.id}${r"}"} and del_flag = $\{@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL\}
     </select>
 
     <select id="find" resultType="${entityPackage}.${mapper.entitySimpleName}">

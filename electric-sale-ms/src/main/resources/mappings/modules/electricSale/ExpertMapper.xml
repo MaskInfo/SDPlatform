@@ -50,6 +50,7 @@
         <if test="auditDate != null and auditDate != ''">
             AND a.AUDIT_DATE LIKE CONCAT('%', #{auditDate}, '%')
         </if>
+        and del_flag = ${@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL}
     </sql>
 
     <sql id="expertJoins">
