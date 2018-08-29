@@ -7,7 +7,7 @@
         <result property="createDate" column="create_date"/>
         <result property="updateDate" column="update_date"/>
         <result property="remarks" column="remarks"/>
-        <result property="delFlag" column="delFlag"/>
+        <result property="delFlag" column="del_flag"/>
         <result property="headImg" column="head_img"/>
         <result property="openId" column="open_id"/>
         <result property="nickName" column="nick_name"/>
@@ -18,15 +18,15 @@
     </resultMap>
 
     <sql id="userDaoColumns">
-        a.id AS "id",
-        a.create_date AS "createDate",
-        a.update_date AS "updateDate",
-        a.remarks AS "remarks",
-        a.del_flag AS "delFlag",
-		a.head_img AS "headImg",
-		a.open_id AS "openId",
-		a.nick_name AS "nickName",
-		a.user_name AS "userName"
+        a.id,
+        a.create_date,
+        a.update_date,
+        a.remarks,
+        a.del_flag,
+		a.head_img,
+		a.open_id,
+		a.nick_name,
+		a.user_name
     </sql>
 
     <sql id="userJoins">

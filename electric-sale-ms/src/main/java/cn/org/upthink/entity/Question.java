@@ -19,7 +19,6 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
 public class Question extends BaseDataEntity<Question> {
     @TableField(name = "ques_title",isQuery = true,required = true,remark = "问题标题")
     private String quesTitle;
