@@ -72,11 +72,5 @@ public class ExpertService extends BaseCrudService<ExpertMapper, Expert> {
         BeanUtils.copyProperties(expertFormDTO, expert, "userId","state");
         this.save(expert);
 
-        /*User user = new User();
-        BeanUtils.copyProperties(userInfo, user);
-        Role role = RoleService.getRole(RoleTypeEnum.EXPERT);
-        user.setRole(role);
-        userService.insertUser_Role(user);*/
-
     }
 }

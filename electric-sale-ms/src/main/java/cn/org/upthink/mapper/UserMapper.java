@@ -9,5 +9,5 @@ public interface UserMapper extends CrudDao<User> {
 
     void insertUser_Role(User user);
 
-    User getByOpenId(User user);
+    User getByOpenId(String openId);
 }

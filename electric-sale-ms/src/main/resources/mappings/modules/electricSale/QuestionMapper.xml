@@ -8,10 +8,10 @@
         <result column="update_date" property="updateDate"/>
         <result column="remarks" property="remarks"/>
         <result column="del_flag" property="delFlag"/>
-        <result column="QUES_TITLE" property="quesTitle"/>
-        <result column="QUESTION_DATE" property="quesDate"/>
-        <result column="ANSWER_DATE" property="ansDate"/>
-        <result column="ANS_DETAIL" property="ansDetail"/>
+        <result column="ques_title" property="quesTitle"/>
+        <result column="question_date" property="quesDate"/>
+        <result column="answer_date" property="ansDate"/>
+        <result column="ans_detail" property="ansDetail"/>
 
         <association property="answerer" select="cn.org.upthink.mapper.UserMapper.get" column="answerer_id"/>
         <association property="questioner" select="cn.org.upthink.mapper.UserMapper.get" column="questioner_id"/>
@@ -23,10 +23,10 @@
         a.update_date,
         a.remarks,
         a.del_flag,
-		a.QUES_TITLE,
-		a.QUESTION_DATE,
-		a.ANSWER_DATE,
-		a.ANS_DETAIL,
+		a.ques_title,
+		a.question_date,
+		a.answer_date,
+		a.ans_detail,
 		a.answerer_id,
 		a.questioner_id
     </sql>
@@ -42,19 +42,19 @@
         <where>
             a.del_flag = #{delFlag}
             <if test="quesTitle != null and quesTitle != ''">
-                AND a.QUES_TITLE LIKE CONCAT('%', #{quesTitle}, '%')
+                AND a.ques_title LIKE CONCAT('%', #{quesTitle}, '%')
             </if>
             <if test="quesDetail != null and quesDetail != ''">
-                AND a.QUES_DETAIL LIKE CONCAT('%', #{quesDetail}, '%')
+                AND a.ques_detail LIKE CONCAT('%', #{quesDetail}, '%')
             </if>
             <if test="ansDetail != null and ansDetail != ''">
-                AND a.ANS_DETAIL LIKE CONCAT('%', #{ansDetail}, '%')
+                AND a.ans_detail LIKE CONCAT('%', #{ansDetail}, '%')
             </if>
             <if test="questioner != null">
-                AND a.QUESTIONER_ID = #{questioner.id}
+                AND a.questioner_id = #{questioner.id}
             </if>
             <if test="answerer != null">
-                AND a.ANSWERER_ID = #{answerer.id}
+                AND a.answerer_id = #{answerer.id}
             </if>
             <if test="isPay">
                 AND a.is_pay = #{isPay}
@@ -86,12 +86,8 @@
 
     <select id="get" resultType="cn.org.upthink.entity.Question">
         SELECT
-        <include refid="questionDaoColumns"/>,
-        a.ques_detail as "quesDetail"
-        FROM tb_question a join tb_user u1
-        on a.questioner_id = u1.id
-        join tb_user u2
-        on a.answer_id = u2.id
+        <include refid="questionDaoColumns"/>
+        FROM tb_question a
         WHERE a.id = #{id} and del_flag = ${@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL}
     </select>
 
@@ -102,13 +98,15 @@
 			update_date,
 			remarks,
 			del_flag,
-			QUES_TITLE,
-			QUES_DETAIL,
-			QUES_DATE,
-			QUESTIONER_ID,
-			ANSWERER_ID,
-			ANS_DATE,
-			ANS_DETAIL
+			ques_title,
+			ques_detail,
+			question_date,
+			questioner_id,
+			answerer_id,
+			answer_date,
+			ans_detail,
+			is_answer,
+			is_pay
         ) VALUES (
 			#{id},
 			#{createDate},
@@ -121,7 +119,9 @@
 		    #{questioner.id},
 		    #{answerer.id},
 		    #{ansDate},
-		    #{ansDetail}
+		    #{ansDetail},
+		    #{isAnswer},
+		    #{isPay}
         )
     </insert>
 
@@ -130,10 +130,10 @@
         <trim prefix="SET" suffixOverrides=",">
             <if test="quesTitle!=null">QUES_TITLE = #{quesTitle},</if>
             <if test="quesDetail!=null">QUES_DETAIL = #{quesDetail},</if>
-            <if test="quesDate!=null">QUES_DATE = #{quesDate},</if>
+            <if test="quesDate!=null">QUESTION_DATE = #{quesDate},</if>
             <if test="questioner!=null">QUESTIONER_ID = #{questioner.id},</if>
             <if test="answerer!=null">ANSWERER_ID = #{answerer.id},</if>
-            <if test="ansDate!=null">ANS_DATE = #{ansDate},</if>
+            <if test="ansDate!=null">ANSWER_DATE = #{ansDate},</if>
             <if test="ansDetail!=null">ANS_DETAIL = #{ansDetail},</if>
         </trim>
         WHERE id = #{id}

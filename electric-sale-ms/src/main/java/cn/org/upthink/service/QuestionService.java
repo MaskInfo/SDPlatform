@@ -2,6 +2,7 @@ package cn.org.upthink.service;
 
 import cn.org.upthink.entity.User;
 import cn.org.upthink.helper.LoginTokenHelper;
+import cn.org.upthink.model.dto.PayFormDto;
 import cn.org.upthink.model.dto.QuestionQueryDTO;
 import cn.org.upthink.model.dto.UserFormDTO;
 import cn.org.upthink.persistence.mybatis.dto.Page;
@@ -67,13 +68,18 @@ public class QuestionService extends BaseCrudService<QuestionMapper, Question> {
         return this.findPage(new Page<Question>(request, response), question);
     }
 
-    public void save(String userId, String ques_title, String ques_detail) {
+    public void save(String operationId, HttpServletRequest request, PayFormDto payFormDto) {
         Question q = new Question();
+        q.setId(operationId);
+        q.setIsNewRecord(true);
+        q.setQuesTitle(payFormDto.getQuesTitle());
+        q.setQuesDetail(payFormDto.getQuesDetail());
+
         User user = new User();
-        user.setId(userId);
+        UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate, request);
+        user.setId(userInfo.getUserId());
         q.setQuestioner(user);
-        q.setQuesTitle(ques_title);
-        q.setQuesDetail(ques_detail);
+
         this.save(q);
     }
 }

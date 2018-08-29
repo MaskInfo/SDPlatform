@@ -84,8 +84,7 @@ public class UserService extends BaseCrudService<UserMapper, User> {
     @Transactional(readOnly = false)
     public User saveUser(UserFormDTO userFormDTO, String openid) {
         User user = new User();
-        user.setOpenId(openid);
-        User dbUser = dao.getByOpenId(user);
+        User dbUser = dao.getByOpenId(openid);
         if(Objects.nonNull(dbUser)){
             BeanUtils.copyProperties(dbUser, user);
         }
@@ -95,7 +94,7 @@ public class UserService extends BaseCrudService<UserMapper, User> {
         //设置新用户角色
         if(Objects.isNull(dbUser)){
             Role role = RoleService.getRole(RoleTypeEnum.NORMAL);
-            List roleList = new ArrayList();
+            List<Role> roleList = new ArrayList();
             roleList.add(role);
             user.setRoles(roleList);
             this.insertUser_Role(user);
@@ -107,5 +106,10 @@ public class UserService extends BaseCrudService<UserMapper, User> {
     @Transactional(readOnly = false)
     public void insertUser_Role(User user){
         dao.insertUser_Role(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User getUserByOpenId(String openId){
+        return dao.getByOpenId(openId);
     }
 }

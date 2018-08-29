@@ -8,8 +8,8 @@
         a.update_date AS "updateDate",
         a.remarks AS "remarks",
         a.del_flag AS "delFlag",
-		a.ROLE_NAME AS "roleName",
-		a.ROLE_TYPE AS "roleType"
+		a.role_name AS "roleName",
+		a.role_type AS "roleType"
     </sql>
 
     <sql id="roleJoins">
@@ -72,8 +72,8 @@
 			update_date,
 			remarks,
 			del_flag,
-			ROLE_NAME,
-			ROLE_TYPE
+			role_name,
+			role_type
         ) VALUES (
 			#{id},
 			#{createDate},

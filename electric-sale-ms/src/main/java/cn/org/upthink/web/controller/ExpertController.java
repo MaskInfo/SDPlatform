@@ -60,52 +60,14 @@ public class ExpertController extends BaseController {
     })
     @RequestMapping(value = "/{id}", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     public BaseResult<?> findExpert(@PathVariable("id") String id) {
-        Expert expert = null;
-        try {
-            expert = new Expert();
-            expert.setId(id);
-            expert = expertService.get(expert);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Expert expert = new Expert();
+        expert.setId(id);
+        expert = expertService.get(expert);
         if (expert != null) {
             return getBaseResultSuccess(expert, "有效对象");
         } else {
             return getBaseResultFail(null, "无效的id，没有获取到对象");
         }
     }
-
-
-    /*@ApiOperation(value = "更新Expert", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
-    })
-    @PutMapping(value = "/expert", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> updateExpert(
-                     @RequestParam(value = "id", required = true, defaultValue = "") String id,
-                     @ApiParam @RequestBody ExpertFormDTO expertFormDTO) {
-        try {
-            if(expertService.get(id)==null){
-                return getBaseResultFail(false, "操作失败，不存在的Expert。请传入有效的Expert的ID。");
-            }
-            Expert expert = new Expert();
-            expert.setId(id);
-            expert.setExpertResume(expertFormDTO.getExpertResume());
-            expert.setExpertName(expertFormDTO.getExpertName());
-            expert.setExpertDetail(expertFormDTO.getExpertDetail());
-            expert.setTelephone(expertFormDTO.getTelephone());
-            expert.setQuizPrice(expertFormDTO.getQuizPrice());
-            expert.setAuditorId(expertFormDTO.getAuditorId());
-            expert.setState(expertFormDTO.getState());
-            expert.setEmail(expertFormDTO.getEmail());
-            expert.setAuditDate(expertFormDTO.getAuditDate());
-            expertService.save(expert);
-            return getBaseResultSuccess(true, "保存Expert成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return getBaseResultFail(false, "保存失败");
-    }*/
-
 
 }

@@ -2,6 +2,7 @@ package cn.org.upthink.entity;
 
 import cn.org.upthink.gen.annotation.TableField;
 import cn.org.upthink.persistence.mybatis.entity.BaseDataEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,6 +19,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
 public class Question extends BaseDataEntity<Question> {
     @TableField(name = "ques_title",isQuery = true,required = true,remark = "问题标题")
     private String quesTitle;
@@ -29,9 +31,9 @@ public class Question extends BaseDataEntity<Question> {
     private User questioner;
     @TableField(name = "answerer",isQuery = true,required = true,remark = "回答者")
     private User answerer;
-    @TableField(name = "ques_date",isQuery = true,required = true,remark = "提问日期")
+    @TableField(name = "question_date",isQuery = true,required = true,remark = "提问日期")
     private Date quesDate = new Date();
-    @TableField(name = "ans_date",isQuery = true,required = true,remark = "回答日期")
+    @TableField(name = "answer_date",isQuery = true,required = true,remark = "回答日期")
     private Date ansDate;
     @TableField(name = "is_answer",isQuery = true,required = true,remark = "是否回答")
     private boolean isAnswer = false;

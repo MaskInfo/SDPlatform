@@ -42,8 +42,6 @@ public enum HttpClientUtils {
         String responseBody = null;
         try {
             HttpGet httpget = new HttpGet(url);
-
-
             // Create a custom response handler
             ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 

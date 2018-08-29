@@ -23,10 +23,10 @@
         a.update_date AS "updateDate",
         a.remarks AS "remarks",
         a.del_flag AS "delFlag",
-		a.HEAD_IMG AS "headImg",
-		a.OPEN_ID AS "openId",
-		a.NICK_NAME AS "nickName",
-		a.USER_NAME AS "userName"
+		a.head_img AS "headImg",
+		a.open_id AS "openId",
+		a.nick_name AS "nickName",
+		a.user_name AS "userName"
     </sql>
 
     <sql id="userJoins">
@@ -105,10 +105,10 @@
 			update_date,
 			remarks,
 			del_flag,
-			HEAD_IMG,
-			OPEN_ID,
-			NICK_NAME,
-			USER_NAME
+			head_img,
+			open_id,
+			nick_name,
+			user_name
         ) VALUES (
 		    #{id},
 			#{createDate},

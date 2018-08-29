@@ -8,20 +8,20 @@
         a.update_date AS "updateDate",
         a.remarks AS "remarks",
         a.del_flag AS "delFlag",
-		a.EXPERT_RESUME AS "expertResume",
-		a.EXPERT_NAME AS "expertName",
-		a.TELEPHONE,
-		a.QUIZ_PRICE AS "quizPrice",
-		a.AUDITOR_ID as "auditorId",
-		a.STATE,
-		a.EMAIL,
-		a.AUDIT_DATE AS "auditDate",
+		a.expert_resume AS "expertResume",
+		a.expert_name AS "expertName",
+		a.telephone,
+		a.quiz_price AS "quizPrice",
+		a.auditor_id as "auditorId",
+		a.state,
+		a.email,
+		a.audit_date AS "auditDate",
 		a.user_id as "userId"
     </sql>
 
     <sql id="expertIf">
         <if test="id != null">
-            and a.id = #{id}
+            and a.ID = #{id}
         </if>
         <if test="expertResume != null and expertResume != ''">
             AND a.EXPERT_RESUME LIKE CONCAT('%', #{expertResume}, '%')
@@ -42,7 +42,7 @@
             AND a.AUDITORID LIKE CONCAT('%', #{auditorId}, '%')
         </if>
         <if test="state != null and state != ''">
-            AND a.STATE LIKE CONCAT('%', #{state}, '%')
+            AND a.STATE = #{state}
         </if>
         <if test="email != null and email != ''">
             AND a.EMAIL LIKE CONCAT('%', #{email}, '%')
@@ -50,7 +50,7 @@
         <if test="auditDate != null and auditDate != ''">
             AND a.AUDIT_DATE LIKE CONCAT('%', #{auditDate}, '%')
         </if>
-        and del_flag = ${@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL}
+        and a.del_flag = ${@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL}
     </sql>
 
     <sql id="expertJoins">
@@ -89,7 +89,6 @@
         <include refid="expertDaoColumns"/>
         FROM tb_expert a
         <where>
-            a.del_flag = #{delFlag}
             <include refid="expertIf"/>
 		${sqlMap.dsf}
         </where>
@@ -103,15 +102,15 @@
 			update_date,
 			remarks,
 			del_flag,
-			EXPERT_RESUME,
-			EXPERT_NAME,
-			EXPERT_DETAIL,
-			TELEPHONE,
-			QUIZ_PRICE,
-			AUDITOR_ID,
-			STATE,
-			EMAIL,
-			AUDIT_DATE,
+			expert_resume,
+			expert_name,
+			expert_detail,
+			telephone,
+			quiz_price,
+			auditor_id,
+			state,
+			email,
+			audit_date,
 			user_id
         ) VALUES (
 			#{id},
@@ -144,7 +143,7 @@
 		   <if test="state!=null">STATE = #{state},</if>
 		   <if test="email!=null">EMAIL = #{email},</if>
 		   <if test="auditDate!=null">AUDIT_DATE = #{auditDate},</if>
-		   <if test="userId!=null">user_id = #{userId},</if>
+		   <if test="userId!=null">USER_ID = #{userId},</if>
 		</trim>
         WHERE id = #{id}
     </update>

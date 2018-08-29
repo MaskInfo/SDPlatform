@@ -3,8 +3,10 @@ package cn.org.upthink.web.controller;
 import cn.org.upthink.common.dto.BaseResult;
 import cn.org.upthink.model.ResponseConstant;
 import cn.org.upthink.model.dto.PayFormDto;
+import cn.org.upthink.model.dto.PayNotifyDto;
 import cn.org.upthink.model.type.PayTypeEnum;
 import cn.org.upthink.service.PayService;
+import cn.org.upthink.util.WechatUtil;
 import cn.org.upthink.web.BaseController;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
@@ -16,7 +18,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Copyright (C), 2018-2018
@@ -42,9 +46,11 @@ public class PayController extends BaseController {
 
         Preconditions.checkState(StringUtils.isNotBlank(payFormDto.getFee()), ResponseConstant.INVALID_PARAM.getMsg());
 
-        if(payType.equals(PayTypeEnum.ASK.getValue())){
-            Preconditions.checkState(StringUtils.isNotBlank(payFormDto.getQues_detail()), ResponseConstant.INVALID_PARAM.getMsg());
-            Preconditions.checkState(StringUtils.isNotBlank(payFormDto.getQues_title()), ResponseConstant.INVALID_PARAM.getMsg());
+        if(payType.equals(PayTypeEnum.ASK.name())){
+            Preconditions.checkState(StringUtils.isNotBlank(payFormDto.getQuesDetail()), ResponseConstant.INVALID_PARAM.getMsg());
+            Preconditions.checkState(StringUtils.isNotBlank(payFormDto.getQuesTitle()), ResponseConstant.INVALID_PARAM.getMsg());
+        }else{
+            Preconditions.checkState(StringUtils.isNotBlank(payFormDto.getCourseId()), ResponseConstant.INVALID_PARAM.getMsg());
         }
 
         Map<String, String> ret = payService.preparePay(request, payFormDto);
@@ -54,17 +60,13 @@ public class PayController extends BaseController {
         return getBaseResultSuccess(ret, ResponseConstant.OK.getCode(), ResponseConstant.OK.getMsg());
     }
 
-    @ApiOperation(value = "支付回调", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @RequestMapping(value = "/callback", produces = "application/json;charset=UTF-8", method = RequestMethod.PUT)
-    public BaseResult callback(HttpServletRequest request, String payType, String id){
-        if(StringUtils.isBlank(payType) || !EnumUtils.isValidEnum(PayTypeEnum.class, payType)){
-            return getBaseResultSuccess(null, ResponseConstant.PAYTYPE_IS_NULL_OR_ERROR.getCode(), ResponseConstant.PAYTYPE_IS_NULL_OR_ERROR.getMsg());
+    @ApiOperation(value = "支付回调", notes = "", produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/callback", produces = "application/xml;charset=UTF-8")
+    public String callback(@RequestBody PayNotifyDto payNotifyDto) throws Exception {
+        if(Objects.isNull(payNotifyDto)){
+            return WechatUtil.returnXmlData(WechatUtil.FAIL, "通知参数为空");
         }
-
-        Preconditions.checkState(StringUtils.isNotBlank(id), ResponseConstant.INVALID_PARAM.getMsg());
-
-        payService.callback(request, payType, id);
-        return getBaseResultSuccess(null, ResponseConstant.OK.getCode(), ResponseConstant.OK.getMsg());
+        return payService.callback(payNotifyDto);
     }
 
 }

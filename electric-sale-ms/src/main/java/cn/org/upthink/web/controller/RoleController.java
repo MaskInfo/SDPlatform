@@ -32,7 +32,7 @@ import java.util.Map;
 */
 @Api(value="roleApi", description = "role的接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "/redpacket")
+@RequestMapping(value = "/v1")
 public class RoleController extends BaseController {
 
     @Autowired

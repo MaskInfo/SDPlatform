@@ -11,12 +11,6 @@ import lombok.Getter;
  */
 @Getter
 public enum PayTypeEnum {
-    COURSE("course"),
-    ASK("ask")
-    ;
-    private String value;
-
-    PayTypeEnum(String value) {
-        this.value = value;
-    }
+    COURSE,
+    ASK
 }

@@ -23,11 +23,8 @@ public class Xml2MapConverter {
         StringBuffer sb = new StringBuffer();
         sb.append("<xml>");
         for (String key : map.keySet()) {
-            System.out.println(key + "========" + map.get(key));
-
             //String value = "<![CDATA[" + map.get(key) + "]]>";
             sb.append("<" + key + ">" + map.get(key) + "</" + key + ">");
-            System.out.println();
         }
         sb.append("</xml>");
         xmlResult = sb.toString();
