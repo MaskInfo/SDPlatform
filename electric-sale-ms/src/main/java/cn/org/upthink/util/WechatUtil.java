@@ -56,14 +56,7 @@ public class WechatUtil {
         map.put("operationId", operationId);
         map.put("fee", payFormDto.getFee());
         String attach = JSON.toJSONString(map);
-
-        Map<String, String> keyPair = RSAEncrypt.getKeyPair();
-        String privateKeyString = keyPair.get("privateKeyString");
-        String publicKeyString = keyPair.get("publicKeyString");
-        stringRedisTemplate.boundValueOps(ATTACH_PRIVATE_KEY + nonceStr).set(privateKeyString);
-        stringRedisTemplate.boundValueOps(ATTACH_PUBLIC_KEY + nonceStr).set(publicKeyString);
-
-        return RSAEncrypt.publicDecryptStr(attach, publicKeyString);
+        return attach;
     }
 
     /**
@@ -76,13 +69,8 @@ public class WechatUtil {
      * @throws Exception
      */
     public static Map<String, String> getAttachData(StringRedisTemplate stringRedisTemplate, String nonceStr, String attach) throws Exception {
-        String privateKey = stringRedisTemplate.boundValueOps(ATTACH_PRIVATE_KEY + nonceStr).get();
-        String data = RSAEncrypt.privateDecryptStr(attach, privateKey);
-        if (StringUtils.isNotBlank(data)) {
-            stringRedisTemplate.delete(ATTACH_PRIVATE_KEY + nonceStr);
-            stringRedisTemplate.delete(ATTACH_PUBLIC_KEY + nonceStr);
-
-            return JSON.parseObject(data, Map.class);
+        if (StringUtils.isNotBlank(attach)) {
+            return JSON.parseObject(attach, Map.class);
         }
 
         return null;

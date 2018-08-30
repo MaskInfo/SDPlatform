@@ -135,6 +135,8 @@
             <if test="answerer!=null">ANSWERER_ID = #{answerer.id},</if>
             <if test="ansDate!=null">ANSWER_DATE = #{ansDate},</if>
             <if test="ansDetail!=null">ANS_DETAIL = #{ansDetail},</if>
+            <if test="isAnswer">IS_ANSWER = #{isAnswer},</if>
+            <if test="isPay">IS_PAY = #{isPay},</if>
         </trim>
         WHERE id = #{id}
     </update>

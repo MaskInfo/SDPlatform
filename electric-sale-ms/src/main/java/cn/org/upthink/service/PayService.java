@@ -144,8 +144,10 @@ public class PayService {
             String operationId = attachData.get("operationId");
             if (payType.equals(PayTypeEnum.ASK.name())) {
                 Question question = questionService.get(operationId);
-                question.setPay(true);
-                questionService.save(question);
+                if(Objects.isNull(question)){
+                    question.setPay(true);
+                    questionService.save(question);
+                }
             } else {
                 String openid = payNotifyDto.getOpenid();
                 User user = userService.getUserByOpenId(openid);

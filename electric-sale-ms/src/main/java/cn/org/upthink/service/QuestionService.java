@@ -74,12 +74,14 @@ public class QuestionService extends BaseCrudService<QuestionMapper, Question> {
         q.setIsNewRecord(true);
         q.setQuesTitle(payFormDto.getQuesTitle());
         q.setQuesDetail(payFormDto.getQuesDetail());
+        q.setCreateDate(new Date());
+        q.setUpdateDate(q.getCreateDate());
 
         User user = new User();
         UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate, request);
         user.setId(userInfo.getUserId());
         q.setQuestioner(user);
 
-        this.save(q);
+        dao.insert(q);
     }
 }

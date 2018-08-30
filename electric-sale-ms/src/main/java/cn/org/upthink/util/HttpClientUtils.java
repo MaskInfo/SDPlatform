@@ -78,7 +78,7 @@ public enum HttpClientUtils {
         List<BasicNameValuePair> parameters = new ArrayList<>();
         StringEntity postEntity = new StringEntity(data, "UTF-8");
         if(type.equals(XML)){
-            httpPost.addHeader("Content-Type", "text/xml");
+            httpPost.addHeader("Content-Type", "applicaton/xml");
         }else{
             httpPost.addHeader("Content-Type", "application/json");
         }

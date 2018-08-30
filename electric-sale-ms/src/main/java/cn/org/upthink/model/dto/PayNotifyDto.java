@@ -51,15 +51,15 @@ public class PayNotifyDto {
 
     private String bank_type;
 
-    private int total_fee;
+    private String total_fee;
 
-    private int settlement_total_fee;
+    private String settlement_total_fee;
 
     private String fee_type;
 
     private String cash_fee_type;
 
-    private int cash_fee;
+    private String cash_fee;
 
     private String transaction_id;
 
