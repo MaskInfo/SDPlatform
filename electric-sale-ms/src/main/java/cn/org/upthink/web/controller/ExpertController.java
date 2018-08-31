@@ -36,6 +36,9 @@ public class ExpertController extends BaseController {
     private ExpertService expertService;
 
     @ApiOperation(value = "专家申请", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public BaseResult<?> applyExpert(HttpServletRequest request, @ApiParam @RequestBody ExpertFormDTO expertFormDTO) {
         expertService.apply(expertFormDTO, request);
@@ -43,6 +46,9 @@ public class ExpertController extends BaseController {
     }
 
     @ApiOperation(value = "专家列表查询", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     public BaseResult<?> listExpert(HttpServletRequest request, HttpServletResponse response) {
         Expert expert = new Expert();
@@ -56,7 +62,8 @@ public class ExpertController extends BaseController {
 
     @ApiOperation(value = "专家详细信息", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
+            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
     @RequestMapping(value = "/{id}", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     public BaseResult<?> findExpert(@PathVariable("id") String id) {

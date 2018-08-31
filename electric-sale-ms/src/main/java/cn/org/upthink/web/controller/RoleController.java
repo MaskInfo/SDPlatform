@@ -30,7 +30,6 @@ import java.util.Map;
 /**
 * Created by rover on 2018-06-08.
 */
-@Api(value="roleApi", description = "role的接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
 @RequestMapping(value = "/v1")
 public class RoleController extends BaseController {
@@ -38,10 +37,6 @@ public class RoleController extends BaseController {
     @Autowired
     private RoleService roleService;
 
-    @ApiOperation(value ="获取role详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
-    })
     @GetMapping(value = "/role/{id}", produces = "application/json;charset=UTF-8")
     public BaseResult<?> findRole(@PathVariable("id") String id) {
         Role role = null;
@@ -57,10 +52,6 @@ public class RoleController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "删除Role信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
-    })
     @DeleteMapping(value = "/role/{id}", produces = "application/json;charset=UTF-8")
     public BaseResult<?> deleteRole(@PathVariable("id") String id) {
         Role role = null;
@@ -76,7 +67,6 @@ public class RoleController extends BaseController {
         return getBaseResultFail(false, "无效的id，没有删除Role对象");
     }
 
-    @ApiOperation(value="新增Role", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @PostMapping(value = "/role", produces = "application/json;charset=UTF-8")
     public BaseResult<?> addRole(@ApiParam @RequestBody RoleFormDTO roleFormDTO) {
         try {
@@ -91,10 +81,6 @@ public class RoleController extends BaseController {
         return getBaseResultFail(false, "保存失败");
     }
 
-    @ApiOperation(value = "更新Role", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
-    })
     @PutMapping(value = "/role", produces = "application/json;charset=UTF-8")
     public BaseResult<?> updateRole(
                      @RequestParam(value = "id", required = true, defaultValue = "") String id,
@@ -115,7 +101,6 @@ public class RoleController extends BaseController {
         return getBaseResultFail(false, "保存失败");
     }
 
-    @ApiOperation(value = "Role列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @GetMapping(value = "/role", produces = "application/json;charset=UTF-8")
     public BaseResult<?> listRole(HttpServletRequest request, HttpServletResponse response, @ApiParam RoleQueryDTO roleQueryDTO) {
         try {

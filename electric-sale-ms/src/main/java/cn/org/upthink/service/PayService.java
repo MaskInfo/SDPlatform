@@ -144,7 +144,7 @@ public class PayService {
             String operationId = attachData.get("operationId");
             if (payType.equals(PayTypeEnum.ASK.name())) {
                 Question question = questionService.get(operationId);
-                if(Objects.isNull(question)){
+                if(Objects.nonNull(question)){
                     question.setPay(true);
                     questionService.save(question);
                 }

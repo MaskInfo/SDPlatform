@@ -34,9 +34,9 @@ import java.util.Collections;
 import java.util.function.Supplier;
 
 /**
-* Created by rover on 2018-06-08.
-*/
-@Api(value="loopImgApi", description = "loopImg的接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+ * Created by rover on 2018-06-08.
+ */
+@Api(value = "loopImgApi", description = "loopImg的接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
 @RequestMapping(value = "/v1")
 public class LoopImgController extends BaseController {
@@ -44,18 +44,19 @@ public class LoopImgController extends BaseController {
     @Autowired
     private LoopImgService loopImgService;
 
-    @ApiOperation(value ="获取loopImg详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "获取loopImg详细信息", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "loopImgId", value = "loopImgId编号", required = true, dataType = "String")
+            @ApiImplicitParam(name = "loopImgId", value = "loopImgId编号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
     @GetMapping(value = "/loopImg/{loopImgId}", produces = "application/json;charset=UTF-8")
     public BaseResult<?> findLoopImg(@PathVariable("loopImgId") String loopImgId) {
-        return tryCatch(()->{
+        return tryCatch(() -> {
 
             LoopImg loopImg = loopImgService.get(loopImgId);
-            if(loopImg!=null){
+            if (loopImg != null) {
                 return getBaseResultSuccess(Bean2VOConverter.toLoopImgVo(loopImg), "有效对象");
-            }else{
+            } else {
                 return getBaseResultSuccess(null, "没有获取到对象");
             }
 
@@ -63,26 +64,31 @@ public class LoopImgController extends BaseController {
 
     }
 
-    @ApiOperation(value = "删除LoopImg信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "删除LoopImg信息", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "loopImgId", value = "loopImgId编号", required = true, dataType = "String")
+            @ApiImplicitParam(name = "loopImgId", value = "loopImgId编号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
     @DeleteMapping(value = "/loopImg/{loopImgId}", produces = "application/json;charset=UTF-8")
     public BaseResult<?> deleteLoopImg(@PathVariable("loopImgId") String loopImgId) {
-        return tryCatch(()->{
+        return tryCatch(() -> {
             LoopImg loopImg = loopImgService.get(loopImgId);
-            Preconditions.checkNotNull(loopImg,"待删除对象不存在");
+            Preconditions.checkNotNull(loopImg, "待删除对象不存在");
 
             loopImgService.delete(loopImg);
             return getBaseResultSuccess(null, "已成功删除LoopImg对象");
         });
     }
+
     @RequestLogging
-    @ApiOperation(value="新增LoopImg", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "新增LoopImg", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @PostMapping(value = "/loopImg", produces = "application/json;charset=UTF-8")
     public BaseResult<?> addLoopImg(@ApiParam @RequestBody LoopImgFormDTO loopImgFormDTO) {
 
-        return tryCatch(()->{
+        return tryCatch(() -> {
             checkLoopImgFormDTO(loopImgFormDTO);
             final LoopImg loopImg = DTO2BeanConverter.getLoopImg(loopImgFormDTO);
 
@@ -93,36 +99,40 @@ public class LoopImgController extends BaseController {
         });
     }
 
-    @ApiOperation(value = "更新LoopImg", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "更新LoopImg", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "loopImgId", value = "loopImgId编号", required = true, dataType = "String")
+            @ApiImplicitParam(name = "loopImgId", value = "loopImgId编号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
     @PutMapping(value = "/loopImg", produces = "application/json;charset=UTF-8")
     public BaseResult<?> updateLoopImg(
-                     @RequestParam(value = "loopImgId", required = true, defaultValue = "") String loopImgId,
-                     @ApiParam @RequestBody LoopImgFormDTO loopImgFormDTO) {
-       return tryCatch(()->{
-           Preconditions.checkState(StringUtils.isNotEmpty(loopImgId),"loopImgId 不能为空");
+            @RequestParam(value = "loopImgId", required = true, defaultValue = "") String loopImgId,
+            @ApiParam @RequestBody LoopImgFormDTO loopImgFormDTO) {
+        return tryCatch(() -> {
+            Preconditions.checkState(StringUtils.isNotEmpty(loopImgId), "loopImgId 不能为空");
             checkLoopImgFormDTO(loopImgFormDTO);
 
-           LoopImg loopImg = loopImgService.get(loopImgId);
-            Preconditions.checkNotNull(loopImg,"操作失败，不存在的LoopImg。请传入有效的LoopImg的loopImgId。");
+            LoopImg loopImg = loopImgService.get(loopImgId);
+            Preconditions.checkNotNull(loopImg, "操作失败，不存在的LoopImg。请传入有效的LoopImg的loopImgId。");
 
-            BeanUtils.copyProperties(loopImgFormDTO,loopImg);
+            BeanUtils.copyProperties(loopImgFormDTO, loopImg);
 
             loopImgService.save(loopImg);
             return getBaseResultSuccess(Bean2VOConverter.toLoopImgVo(loopImg), "保存LoopImg成功");
         });
     }
 
-    @ApiOperation(value = "LoopImg列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "LoopImg列表查询", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @GetMapping(value = "/loopImg", produces = "application/json;charset=UTF-8")
     public BaseResult<?> listLoopImg(HttpServletRequest request, HttpServletResponse response, @ApiParam LoopImgQueryDTO loopImgQueryDTO) {
-        return tryCatch(()->{
+        return tryCatch(() -> {
             LoopImg loopImg = DTO2BeanConverter.getLoopImg(loopImgQueryDTO);
 
             Page<LoopImg> page = loopImgService.findPage(new Page<LoopImg>(request, response), loopImg);
-            if(page.getList().isEmpty()){
+            if (page.getList().isEmpty()) {
                 page.setList(Collections.EMPTY_LIST);
                 return getBaseResultSuccess(page, "没有查询到有效的数据。");
             }
@@ -131,23 +141,13 @@ public class LoopImgController extends BaseController {
 
     }
 
-    private BaseResult<?> tryCatch(Supplier<BaseResult<?>> supplier){
-        //try {
-            return supplier.get();
-        /*}catch (NullPointerException | IllegalArgumentException |IllegalStateException e){
-            e.printStackTrace();
-            logger.error("#####################" + e.getMessage()+"#######################");
-            return getBaseResultFail(null, ResponseCode.INVALID_PARAM,e.getMessage());
-        }catch(Exception e) {
-            e.printStackTrace();
-            logger.error("#####################"+e.getMessage()+"#######################");
-            return getBaseResultFail(null,ResponseCode.HANDLER_EXCEPTION, "处理失败");
-        }*/
+    private BaseResult<?> tryCatch(Supplier<BaseResult<?>> supplier) {
+        return supplier.get();
     }
 
-    private void checkLoopImgFormDTO(LoopImgFormDTO loopImgFormDTO){
-        Preconditions.checkState(StringUtils.isNotEmpty(loopImgFormDTO.getLoopUrl()),"loopUrl 不能为空");
-        Preconditions.checkState(StringUtils.isNotEmpty(loopImgFormDTO.getLoopName()),"loopName不能为空 不能为空");
+    private void checkLoopImgFormDTO(LoopImgFormDTO loopImgFormDTO) {
+        Preconditions.checkState(StringUtils.isNotEmpty(loopImgFormDTO.getLoopUrl()), "loopUrl 不能为空");
+        Preconditions.checkState(StringUtils.isNotEmpty(loopImgFormDTO.getLoopName()), "loopName不能为空 不能为空");
         LoopTypeEnum.getSelf(loopImgFormDTO.getLoopType());
 
     }

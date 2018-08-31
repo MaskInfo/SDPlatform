@@ -41,6 +41,9 @@ public class QuestionController extends BaseController {
     private QuestionService questionService;
 
     @ApiOperation(value = "问题列表查询", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     public BaseResult<?> listQuestion(HttpServletRequest request, HttpServletResponse response, @ApiParam QuestionQueryDTO questionQueryDTO) {
         Page<Question> page = questionService.list(questionQueryDTO, request, response);

@@ -41,8 +41,10 @@ public class CourseDirController extends BaseController {
 
     @ApiOperation(value ="获取courseDir详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
+            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
+
     @GetMapping(value = "/courseDir/{id}", produces = "application/json;charset=UTF-8")
     public BaseResult<?> findCourseDir(@PathVariable("id") String id) {
         CourseDir courseDir = courseDirService.get(id);
@@ -51,7 +53,8 @@ public class CourseDirController extends BaseController {
 
     @ApiOperation(value = "删除CourseDir信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
+            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
     @DeleteMapping(value = "/courseDir/{id}", produces = "application/json;charset=UTF-8")
     public BaseResult<?> deleteCourseDir(@PathVariable("id") String id) {
@@ -64,6 +67,9 @@ public class CourseDirController extends BaseController {
     }
 
     @ApiOperation(value="新增CourseDir", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @PostMapping(value = "/courseDir", produces = "application/json;charset=UTF-8")
     public BaseResult<?> addCourseDir(@ApiParam @RequestBody CourseDirFormDTO courseDirFormDTO) {
         CourseDir courseDir = new CourseDir();
@@ -79,7 +85,8 @@ public class CourseDirController extends BaseController {
 
     @ApiOperation(value = "更新CourseDir", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
+            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
     @PutMapping(value = "/courseDir", produces = "application/json;charset=UTF-8")
     public BaseResult<?> updateCourseDir(
@@ -101,6 +108,9 @@ public class CourseDirController extends BaseController {
     }
 
     @ApiOperation(value = "CourseDir列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @GetMapping(value = "/courseDir", produces = "application/json;charset=UTF-8")
     public BaseResult<?> listCourseDir(HttpServletRequest request, HttpServletResponse response, @ApiParam CourseDirQueryDTO courseDirQueryDTO) {
         CourseDir courseDir = new CourseDir();

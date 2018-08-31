@@ -2,6 +2,9 @@ package cn.org.upthink.model;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 public enum ResponseConstant {
     OK("200","正常"),
@@ -24,4 +27,12 @@ public enum ResponseConstant {
     }
 
     //todo  可自行添加
+
+    public static List<String> codeValues(){
+        List<String> list = new ArrayList<>();
+        for (ResponseConstant constant : ResponseConstant.values()) {
+            list.add(constant.getCode());
+        }
+        return list;
+    }
 }

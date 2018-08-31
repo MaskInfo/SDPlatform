@@ -89,11 +89,11 @@
     <insert id="insertUser_Role">
         <foreach collection="roles" item="role">
             INSERT INTO tb_user_role(
-              user_id,
-              role_id
+            user_id,
+            role_id
             ) VALUES (
-              #{id},
-              #{role.id}
+            #{id},
+            #{role.id}
             )
         </foreach>
     </insert>

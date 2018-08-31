@@ -10,11 +10,14 @@ import cn.org.upthink.util.WechatUtil;
 import cn.org.upthink.web.BaseController;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +32,7 @@ import java.util.Objects;
  * Date: 2018/8/28 10:39
  * Description:
  */
-@Api(value = "payApi", description = "支付Controller", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Api(value = "payApi", description = "支付Controller")
 @RestController
 @RequestMapping(value = "/v1/pay")
 public class PayController extends BaseController {
@@ -37,6 +40,9 @@ public class PayController extends BaseController {
     private PayService payService;
 
     @ApiOperation(value = "生成预支付订单", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @RequestMapping(value = "/prepare", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public BaseResult preparePay(HttpServletRequest request, @RequestBody PayFormDto payFormDto) throws Exception {
         String payType = payFormDto.getPayType();
@@ -61,7 +67,7 @@ public class PayController extends BaseController {
     }
 
     @ApiOperation(value = "支付回调", notes = "", produces = MediaType.APPLICATION_XML_VALUE)
-    @RequestMapping(value = "/callback", produces = "application/xml;charset=UTF-8")
+    @RequestMapping(value = "/callback", produces = "application/xml;charset=UTF-8", method = RequestMethod.POST)
     public String callback(@RequestBody PayNotifyDto payNotifyDto) throws Exception {
         if(Objects.isNull(payNotifyDto)){
             return WechatUtil.returnXmlData(WechatUtil.FAIL, "通知参数为空");

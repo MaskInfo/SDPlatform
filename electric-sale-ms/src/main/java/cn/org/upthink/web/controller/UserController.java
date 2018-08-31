@@ -8,6 +8,8 @@ import cn.org.upthink.common.dto.BaseResult;
 import cn.org.upthink.service.UserService;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,10 @@ public class UserController extends BaseController {
     private UserService userService;
 
     @ApiOperation(value = "登录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @RequestMapping(value = "/login/{code}", produces = "application/json;charset=UTF-8", method = RequestMethod.PATCH)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
+    @RequestMapping(value = "/login/{code}", produces = "application/json;charset=UTF-8", method = RequestMethod.PUT)
     public BaseResult<?> login(HttpServletRequest request, @PathVariable String code, @RequestBody UserFormDTO userFormDTO) throws Exception {
         if (StringUtils.isBlank(code)) {
             return getBaseResultSuccess(null, ResponseConstant.INVALID_PARAM.getCode(), ResponseConstant.INVALID_PARAM.getMsg());

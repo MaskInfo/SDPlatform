@@ -19,9 +19,6 @@ import java.util.Map;
  */
 public class WechatUtil {
 
-    public static final String ATTACH_PRIVATE_KEY = "attach:private:key:";
-    public static final String ATTACH_PUBLIC_KEY = "attach:public:key:";
-
     public static final String SUCCESS = "SUCCESS";
     public static final String FAIL = "FAIL";
 
@@ -75,4 +72,5 @@ public class WechatUtil {
 
         return null;
     }
+
 }

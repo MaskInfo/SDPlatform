@@ -45,8 +45,10 @@ public class CourseController extends BaseController {
 
     @ApiOperation(value ="获取course详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
+            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
+
     @GetMapping(value = "/course/{id}", produces = "application/json;charset=UTF-8")
     public BaseResult<?> findCourse(@PathVariable("id") String id) {
         return getBaseResultSuccess(courseService.get(id), "有效对象");
@@ -54,8 +56,10 @@ public class CourseController extends BaseController {
 
     @ApiOperation(value = "删除Course信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
+            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
+
     @DeleteMapping(value = "/course/{id}", produces = "application/json;charset=UTF-8")
     public BaseResult<?> deleteCourse(@PathVariable("id") String id) {
         Course course = courseService.get(id);
@@ -66,6 +70,9 @@ public class CourseController extends BaseController {
     }
 
     @ApiOperation(value="上传课程视频", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @PostMapping(value = "/course/upload", produces = "application/json;charset=UTF-8")
     public BaseResult<?> uploadCourse(HttpServletRequest request,@ApiParam("课程视频") MultipartFile file) {
         String url = QiniuUtil.upLoadToQiNiu(request, file);
@@ -73,9 +80,10 @@ public class CourseController extends BaseController {
         return getBaseResultSuccess(url, "上传成功");
     }
 
-
-
     @ApiOperation(value="新增Course", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @PostMapping(value = "/course", produces = "application/json;charset=UTF-8")
     public BaseResult<?> addCourse(@ApiParam @RequestBody CourseFormDTO courseFormDTO) {
         Course course = new Course();
@@ -92,7 +100,8 @@ public class CourseController extends BaseController {
 
     @ApiOperation(value = "更新Course", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")
+            @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
     @PutMapping(value = "/course", produces = "application/json;charset=UTF-8")
     public BaseResult<?> updateCourse(
@@ -115,6 +124,9 @@ public class CourseController extends BaseController {
     }
 
     @ApiOperation(value = "Course列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
     @GetMapping(value = "/course", produces = "application/json;charset=UTF-8")
     public BaseResult<?> listCourse(HttpServletRequest request, HttpServletResponse response, @ApiParam CourseQueryDTO courseQueryDTO) {
         Course course = new Course();
@@ -131,18 +143,4 @@ public class CourseController extends BaseController {
         return getBaseResultSuccess(page, "查询数据成功");
     }
 
-    /*@ApiOperation(value = "用户绑定课程", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "courseId", value = "课程Id", required = true, dataType = "String")
-    })
-    @PutMapping(value = "/course/bind", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> updateCourse(
-            @RequestParam(value = "userId", required = true, defaultValue = "") String userId,
-            @RequestParam(value = "courseId", required = true, defaultValue = "") String courseId) {
-
-        courseService.bind(userId,courseId);
-        return getBaseResultSuccess(null, "保存Course成功");
-    }
-*/
 }

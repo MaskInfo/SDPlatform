@@ -36,15 +36,15 @@ public class QuestionService extends BaseCrudService<QuestionMapper, Question> {
 
     @Transactional(readOnly = false)
     public Page<Question> findPage(Page<Question> page, Question question) {
-    return super.findPage(page, question);
+        return super.findPage(page, question);
     }
 
     @Transactional(readOnly = false)
     public void save(Question question) {
-        if (StringUtils.isBlank(question.getId())){
+        if (StringUtils.isBlank(question.getId())) {
             question.preInsert();
             dao.insert(question);
-        }else{
+        } else {
             question.preUpdate();
             dao.update(question);
         }
