@@ -25,6 +25,10 @@ public class RequestHeaderInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if(request.getRequestURL().toString().contains("swagger")){
+            return super.preHandle(request, response, handler);
+        }
+
         String accessToken = request.getHeader("accessToken");
 
         String val = stringRedisTemplate.boundValueOps(accessToken).get();
