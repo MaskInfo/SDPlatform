@@ -69,10 +69,14 @@ public class PayController extends BaseController {
     @ApiOperation(value = "支付回调", notes = "", produces = MediaType.APPLICATION_XML_VALUE)
     @RequestMapping(value = "/callback", produces = "application/xml;charset=UTF-8", method = RequestMethod.POST)
     public String callback(@RequestBody PayNotifyDto payNotifyDto) throws Exception {
-        if(Objects.isNull(payNotifyDto)){
-            return WechatUtil.returnXmlData(WechatUtil.FAIL, "通知参数为空");
+        try {
+            if(Objects.isNull(payNotifyDto)){
+                return WechatUtil.returnXmlData(WechatUtil.FAIL, "通知参数为空");
+            }
+            return payService.callback(payNotifyDto);
+        } catch (Exception e){
+            return WechatUtil.returnXmlData(WechatUtil.FAIL, e.getMessage());
         }
-        return payService.callback(payNotifyDto);
     }
 
 }

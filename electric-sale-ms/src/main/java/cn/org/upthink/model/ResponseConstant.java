@@ -3,6 +3,7 @@ package cn.org.upthink.model;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -31,7 +32,9 @@ public enum ResponseConstant {
     public static List<String> codeValues(){
         List<String> list = new ArrayList<>();
         for (ResponseConstant constant : ResponseConstant.values()) {
-            list.add(constant.getCode());
+            if(!constant.getCode().equals("200")){
+                list.add(constant.getCode());
+            }
         }
         return list;
     }

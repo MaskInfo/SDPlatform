@@ -36,21 +36,22 @@ import java.util.concurrent.TimeUnit;
 public class RequestLoggerAspect {
     protected static final Logger logger = LoggerFactory.getLogger(RequestLoggerAspect.class);
 
-    @Around(value = "@annotation(org.springframework.web.bind.annotation.RequestMapping)")
+    @Around(value = "@annotation(io.swagger.annotations.ApiOperation) || @annotation(cn.org.upthink.anno.RequestLogging)")
     public Object aroundMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         //do
         Object resp = joinPoint.proceed();
         //done 创建日志类
-        RequestLogger requestLogger = new RequestLogger(getApiDescByRequestSignature(joinPoint).value(), new Date());
+        ApiOperation apiOperation = getApiOperationByRequestSignature(joinPoint);
+        RequestLogger requestLogger = new RequestLogger(apiOperation != null ? apiOperation.value() : "", new Date());
         //保存日志
         System.out.println(resp.toString());
         BaseResult baseResult;
-        if(MediaType.APPLICATION_JSON_UTF8_VALUE.equals(getApiDescByRequestSignature(joinPoint).produces())){
+        if(MediaType.APPLICATION_JSON_UTF8_VALUE.equals(apiOperation != null ? apiOperation.produces() : MediaType.APPLICATION_JSON_UTF8_VALUE)){
             baseResult = JSON.parseObject(resp.toString(), BaseResult.class);
         }else{
             baseResult = xml2BaseResult(resp.toString());
         }
-        if(Arrays.asList(ResponseConstant.codeValues()).contains(baseResult.getCode())){
+        if(ResponseConstant.codeValues().contains(baseResult.getCode())){
             logger.error("LOGGING | ERROR \n REQUEST | HEADER {} \n REQUEST | PARAM {} \n RESPONSE | RESULT {}",
                     requestLogger.getHeaders(),requestLogger.getRequestBody(), StringUtils.deleteWhitespace(resp.toString()));
         }else{
@@ -65,7 +66,7 @@ public class RequestLoggerAspect {
      * @param joinPoint
      * @return
      */
-    private ApiOperation getApiDescByRequestSignature(ProceedingJoinPoint joinPoint) {
+    private ApiOperation getApiOperationByRequestSignature(ProceedingJoinPoint joinPoint) {
         if(joinPoint.getSignature() instanceof  MethodSignature){
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             Method method = methodSignature.getMethod();

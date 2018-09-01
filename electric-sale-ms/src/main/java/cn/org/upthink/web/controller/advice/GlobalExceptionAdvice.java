@@ -21,18 +21,21 @@ public class GlobalExceptionAdvice {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @RequestLogging
     @ExceptionHandler({IllegalStateException.class,NullPointerException.class,IllegalArgumentException.class})
     @ResponseBody
     public BaseResult<?> handlerIllegalStateException(Exception e){
         return getErrorResult(ResponseConstant.INVALID_PARAM.getCode(), e.getMessage());
     }
 
+    @RequestLogging
     @ExceptionHandler(BussinessException.class)
     @ResponseBody
     public BaseResult<?> handlerBussinessException(BussinessException e){
         return getErrorResult(e.getCode(), e.getMsg());
     }
 
+    @RequestLogging
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public BaseResult<?> handlerException(Exception e){
