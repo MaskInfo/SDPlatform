@@ -15,11 +15,11 @@ public class CourseDir extends BaseDataEntity<CourseDir> {
     @TableField(name = "course_title",isQuery = true,required = true,remark = "课程标题")
     private String courseTitle;
     @TableField(name = "sequence",isQuery = true,required = true,remark = "排序号")
-    private String sequence;
+    private Integer sequence;
     @TableField(name = "duration",isQuery = true,required = true,remark = "时长")
-    private String duration;
+    private Integer duration;
     @TableField(name = "scanCount",isQuery = true,required = true,remark = "观看人数")
-    private String scanCount;
+    private Integer scanCount;
     @TableField(name = "url",isQuery = true,required = true,remark = "课程地址")
     private String url;
 }

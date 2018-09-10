@@ -58,7 +58,7 @@ public class PayService {
         //支付类型为提问时 初始化问题id 便于封装attach
         String operationId;
         if(PayTypeEnum.ASK.name().equals(payFormDto.getPayType())){
-            operationId = String.valueOf(new Date().getTime());
+            operationId = String.valueOf(System.currentTimeMillis());
         }else{
             operationId = payFormDto.getCourseId();
         }
@@ -77,7 +77,7 @@ public class PayService {
         map.put("appId", retMap.get("appid"));
         map.put("nonceStr", retMap.get("nonce_str"));
         map.put("signType", "MD5");
-        map.put("timeStamp", String.valueOf(new Date().getTime()));
+        map.put("timeStamp", String.valueOf(System.currentTimeMillis()));
         map.put("package", "prepay_id=" + retMap.get("prepay_id"));
         map.put("paySign", getSign(map, keyList));
 
@@ -96,15 +96,15 @@ public class PayService {
         Map<String, String> map = new HashMap<>();
         List<String> keyList = Arrays.asList("appid", "attach", "body", "mch_id", "nonce_str", "notify_url", "openid", "out_trade_no", "spbill_create_ip", "total_fee", "trade_type");
         map.put("appid", appId);
-        map.put("body", "售电小程序-支付");
+        map.put("body", "elec-pay");
         map.put("mch_id", shopNumber);
         map.put("nonce_str", RandomStringUtils.random(12, true, true));
         map.put("attach", WechatUtil.setAttachData(stringRedisTemplate, payFormDto, operationId, map.get("nonce_str")));
-        map.put("notify_url", "http://119.29.161.236:8081/v1/pay/callback");
+        map.put("notify_url", "https://www.enernet.mobi/v1/pay/callback");
         map.put("out_trade_no", RandomStringUtils.random(12, true, true));
         map.put("openid", LoginTokenHelper.INSTANCE.getOpenId(request, stringRedisTemplate));
-        map.put("spbill_create_ip", "192.168.1.194");//TODO
-        map.put("total_fee", payFormDto.getFee());
+        map.put("spbill_create_ip", request.getRemoteHost());//TODO
+        map.put("total_fee", payFormDto.getFee());//
         map.put("trade_type", "JSAPI");
         map.put("sign", getSign(map, keyList));
         return Xml2MapConverter.map2XmlString(map);
@@ -135,9 +135,9 @@ public class PayService {
             }
 
             //校验订单总额
-            if(!attachData.get("fee").equals(payNotifyDto.getTotal_fee())){
+           /* if(!attachData.get("fee").equals(payNotifyDto.getTotal_fee())){
                 return WechatUtil.returnXmlData(WechatUtil.FAIL,"订单总额不一致");
-            }
+            }*/
 
             //根据operationId进行操作
             String payType = attachData.get("payType");
@@ -154,7 +154,6 @@ public class PayService {
                 if(Objects.isNull(user)){
                     return WechatUtil.returnXmlData(WechatUtil.FAIL, "openId无效");
                 }
-
                 courseService.bind(user.getId(), operationId);
             }
 

@@ -62,15 +62,24 @@ public class ExpertService extends BaseCrudService<ExpertMapper, Expert> {
         Expert expert = new Expert();
         expert.setUserId(userInfo.getUserId());
         expert.setState(ExpertStateEnum.AUDIT.getStateCode());
-
         Expert e = dao.get(expert);
         if(Objects.nonNull(e)){
             throw new BussinessException(ResponseConstant.EXPERT_IS_EXISTED.getCode(), ResponseConstant.EXPERT_IS_EXISTED.getMsg());
         }
-
-        expert.setState(ExpertStateEnum.WAIT_AUDIT.getStateCode());
         BeanUtils.copyProperties(expertFormDTO, expert, "userId","state");
+        expert.setAvatarUrl(userInfo.getHeadImg());
+        expert.setState(ExpertStateEnum.WAIT_AUDIT.getStateCode());
         this.save(expert);
 
+    }
+
+    public Expert audit(String expertId, Integer state) {
+        Expert expert = this.dao.find(expertId);
+        if(expert == null){
+            return null;
+        }
+        expert.setState(state);
+        this.save(expert);
+        return expert;
     }
 }

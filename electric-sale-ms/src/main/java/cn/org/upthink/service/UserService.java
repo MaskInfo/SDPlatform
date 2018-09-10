@@ -89,6 +89,7 @@ public class UserService extends BaseCrudService<UserMapper, User> {
             BeanUtils.copyProperties(dbUser, user);
         }
         BeanUtils.copyProperties(userFormDTO, user, "openId");
+        user.setOpenId(openid);
         this.save(user);
 
         //设置新用户角色

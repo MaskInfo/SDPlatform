@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter@Setter@ToString
 public class Course extends BaseDataEntity<Course> {
@@ -19,11 +20,15 @@ public class Course extends BaseDataEntity<Course> {
     @TableField(name = "sale_price",isQuery = true,required = true,remark = "售价")
     private BigDecimal salcePrice;
     @TableField(name = "teach_id",isQuery = true,required = true,remark = "授课人")
-    private String teachId;
+    private Expert teacher;
     @TableField(name = "total_duration",isQuery = true,required = true,remark = "总时长")
     private Integer totalDuration;
     @TableField(name = "course_type",isQuery = true,required = true,remark = "课程类型")
     private Integer courseType;
+    private String imgUrl;
+    private Date startTime;
 
+
+    private boolean buyState; //前端需要
     private String userId;
 }

@@ -69,6 +69,8 @@ public class PayController extends BaseController {
     @ApiOperation(value = "支付回调", notes = "", produces = MediaType.APPLICATION_XML_VALUE)
     @RequestMapping(value = "/callback", produces = "application/xml;charset=UTF-8", method = RequestMethod.POST)
     public String callback(@RequestBody PayNotifyDto payNotifyDto) throws Exception {
+        System.out.println("##################################支付回调###################");
+        System.out.println(payNotifyDto);
         try {
             if(Objects.isNull(payNotifyDto)){
                 return WechatUtil.returnXmlData(WechatUtil.FAIL, "通知参数为空");

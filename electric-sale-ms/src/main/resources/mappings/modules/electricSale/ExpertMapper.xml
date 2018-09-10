@@ -16,11 +16,12 @@
 		a.state,
 		a.email,
 		a.audit_date AS "auditDate",
-		a.user_id as "userId"
+		a.user_id as "userId",
+		a.avatar_url as "avatarUrl"
     </sql>
 
     <sql id="expertIf">
-        <if test="id != null">
+        <if test="id != null and id !=''">
             and a.ID = #{id}
         </if>
         <if test="expertResume != null and expertResume != ''">
@@ -41,7 +42,7 @@
         <if test="auditorId != null and auditorId != ''">
             AND a.AUDITORID LIKE CONCAT('%', #{auditorId}, '%')
         </if>
-        <if test="state != null and state != ''">
+        <if test="state != null and state != -1">
             AND a.STATE = #{state}
         </if>
         <if test="email != null and email != ''">
@@ -49,6 +50,9 @@
         </if>
         <if test="auditDate != null and auditDate != ''">
             AND a.AUDIT_DATE LIKE CONCAT('%', #{auditDate}, '%')
+        </if>
+        <if test="userId != null and userId != ''">
+            AND a.user_id = CONCAT('%', #{userId}, '%')
         </if>
         and a.del_flag = ${@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL}
     </sql>
@@ -65,6 +69,13 @@
         <where>
            <include refid="expertIf"/>
         </where>
+    </select>
+    <select id="find" resultType="cn.org.upthink.entity.Expert">
+        SELECT
+        <include refid="expertDaoColumns"/>,
+        a.expert_detail as "expertDetail"
+        FROM tb_expert a
+        where a.id = #{id}
     </select>
 
     <!--<select id="find" resultType="cn.org.upthink.entity.Expert">
@@ -111,7 +122,8 @@
 			state,
 			email,
 			audit_date,
-			user_id
+			user_id,
+			avatar_Url
         ) VALUES (
 			#{id},
 			#{createDate},
@@ -127,7 +139,8 @@
 		    #{state},
 		    #{email},
 		    #{auditDate},
-		    #{userId}
+		    #{userId},
+		    #{avatarUrl}
         )
     </insert>
 
@@ -144,6 +157,7 @@
 		   <if test="email!=null">EMAIL = #{email},</if>
 		   <if test="auditDate!=null">AUDIT_DATE = #{auditDate},</if>
 		   <if test="userId!=null">USER_ID = #{userId},</if>
+		   <if test="avatarUrl!=null">avatar_Url = #{avatarUrl},</if>
 		</trim>
         WHERE id = #{id}
     </update>

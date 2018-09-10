@@ -44,7 +44,15 @@ public class ExpertController extends BaseController {
         expertService.apply(expertFormDTO, request);
         return getBaseResultSuccess(true, "申请成功");
     }
-
+    @ApiOperation(value = "专家审核", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
+    @RequestMapping(value = "/audit",produces = "application/json;charset=UTF-8", method = RequestMethod.PUT)
+    public BaseResult<?> audit(HttpServletRequest request, @ApiParam String expertId,@ApiParam Integer state) {
+        expertService.audit(expertId, state);
+        return getBaseResultSuccess(true, "审核完成");
+    }
     @ApiOperation(value = "专家列表查询", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
@@ -69,6 +77,7 @@ public class ExpertController extends BaseController {
     public BaseResult<?> findExpert(@PathVariable("id") String id) {
         Expert expert = new Expert();
         expert.setId(id);
+        expert.setState(null);
         expert = expertService.get(expert);
         if (expert != null) {
             return getBaseResultSuccess(expert, "有效对象");

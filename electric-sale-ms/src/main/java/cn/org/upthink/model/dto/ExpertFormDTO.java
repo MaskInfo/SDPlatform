@@ -41,6 +41,7 @@ public class ExpertFormDTO implements Serializable {
 
     @ApiModelProperty(value="用户ID", name="userId", required=true)
     private String userId;
+    private String avatarUrl;
 
     /**手动增加getter,setter*/
 

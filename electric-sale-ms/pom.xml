@@ -131,6 +131,7 @@
                     <include>*.properties</include>
                     <include>**/*.xml</include>
                     <include>**/*.ftl</include>
+                    <include>**/*.jks</include>
                 </includes>
                 <excludes>
                     <!--<exclude>*.xml</exclude>-->

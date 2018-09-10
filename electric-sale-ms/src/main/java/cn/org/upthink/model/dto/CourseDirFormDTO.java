@@ -19,13 +19,13 @@ public class CourseDirFormDTO implements Serializable {
     private String courseTitle;
 
     @ApiModelProperty(value="时长", name="duration", required=true)
-    private String duration;
+    private Integer duration;
 
     @ApiModelProperty(value="排序号", name="sequence", required=true)
-    private String sequence;
+    private Integer sequence;
 
     @ApiModelProperty(value="观看人数", name="scanCount", required=true)
-    private String scanCount;
+    private Integer scanCount;
 
     @ApiModelProperty(value="所属课程id", name="courseId", required=true)
     private String courseId;

@@ -2,6 +2,7 @@ package cn.org.upthink.model.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,6 +35,8 @@ public class CourseFormDTO implements Serializable {
 
     @ApiModelProperty(value="基础价格", name="basePrice", required=true)
     private BigDecimal basePrice;
+    private String imgUrl;
+    private Date startTime;
 
     /**手动增加getter,setter*/
 

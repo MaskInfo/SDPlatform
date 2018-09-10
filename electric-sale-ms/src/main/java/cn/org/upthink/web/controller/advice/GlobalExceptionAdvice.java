@@ -25,6 +25,7 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler({IllegalStateException.class,NullPointerException.class,IllegalArgumentException.class})
     @ResponseBody
     public BaseResult<?> handlerIllegalStateException(Exception e){
+        e.printStackTrace();
         return getErrorResult(ResponseConstant.INVALID_PARAM.getCode(), e.getMessage());
     }
 
@@ -32,6 +33,7 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(BussinessException.class)
     @ResponseBody
     public BaseResult<?> handlerBussinessException(BussinessException e){
+        e.printStackTrace();
         return getErrorResult(e.getCode(), e.getMsg());
     }
 
@@ -39,6 +41,7 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public BaseResult<?> handlerException(Exception e){
+        e.printStackTrace();
         return getErrorResult(ResponseConstant.HANDLER_EXCEPTION.getCode(), e.getMessage());
     }
 

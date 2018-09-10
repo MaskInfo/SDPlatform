@@ -38,4 +38,6 @@ public class Expert extends BaseDataEntity<Expert> {
     private String auditDate;
     @TableField(name = "user_id",isQuery = true,required = true,remark = "关联用户id")
     private String userId;
+
+    private String avatarUrl;
 }

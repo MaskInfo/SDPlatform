@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.upthink.mapper.MaterialMapper">
+
+    <sql id="materialDaoColumns">
+        a.id AS "id",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",
+		a.SALE_PRICE AS "salePrice",
+		a.DOWNLOAD_URL AS "downloadUrl",
+		a.MATERIAL_TITLE AS "materialTitle",
+		a.IMG_URL AS "imgUrl",
+		a.SIZE,
+		a.BASE_PRICE AS "basePrice"
+    </sql>
+
+    <sql id="materialJoins">
+        <!--todo-->
+    </sql>
+
+    <select id="get" resultType="cn.org.upthink.entity.Material">
+        SELECT
+        <include refid="materialDaoColumns"/>
+        FROM tb_material a
+        WHERE a.id = #{id} and del_flag = ${@cn.org.upthink.persistence.mybatis.entity.BaseEntity@DEL_FLAG_NORMAL}
+    </select>
+
+
+    <select id="findList" resultType="cn.org.upthink.entity.Material">
+        SELECT
+        <include refid="materialDaoColumns"/>
+        FROM tb_material a
+        <where>
+            a.del_flag = #{delFlag}
+            <!--<if test="name != null and name != ''">
+                AND a.name LIKE
+                <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+            </if>-->
+             <if test="salePrice != null and salePrice != ''">
+                AND a.SALE_PRICE LIKE CONCAT('%', #{salePrice}, '%')
+             </if>
+             <if test="downloadUrl != null and downloadUrl != ''">
+                AND a.DOWNLOAD_URL LIKE CONCAT('%', #{downloadUrl}, '%')
+             </if>
+             <if test="materialTitle != null and materialTitle != ''">
+                AND a.MATERIAL_TITLE LIKE CONCAT('%', #{materialTitle}, '%')
+             </if>
+             <if test="imgUrl != null and imgUrl != ''">
+                AND a.IMG_URL LIKE CONCAT('%', #{imgUrl}, '%')
+             </if>
+             <if test="size != null and size != ''">
+                AND a.SIZE LIKE CONCAT('%', #{size}, '%')
+             </if>
+             <if test="basePrice != null and basePrice != ''">
+                AND a.BASE_PRICE LIKE CONCAT('%', #{basePrice}, '%')
+             </if>
+		${sqlMap.dsf}
+        </where>
+        ORDER BY a.update_date DESC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO tb_material(
+			id,
+			create_date,
+			update_date,
+			remarks,
+			del_flag,
+			SALE_PRICE,
+			DOWNLOAD_URL,
+			MATERIAL_TITLE,
+			IMG_URL,
+			SIZE,
+			BASE_PRICE
+        ) VALUES (
+			#{id},
+			#{createDate},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+		    #{salePrice},
+		    #{downloadUrl},
+		    #{materialTitle},
+		    #{imgUrl},
+		    #{size},
+		    #{basePrice}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_material
+        <trim prefix="SET" suffixOverrides=",">
+		   <if test="salePrice!=null">SALE_PRICE = #{salePrice},</if>
+		   <if test="downloadUrl!=null">DOWNLOAD_URL = #{downloadUrl},</if>
+		   <if test="materialTitle!=null">MATERIAL_TITLE = #{materialTitle},</if>
+		   <if test="imgUrl!=null">IMG_URL = #{imgUrl},</if>
+		   <if test="size!=null">SIZE = #{size},</if>
+		   <if test="basePrice!=null">BASE_PRICE = #{basePrice},</if>
+		</trim>
+        WHERE id = #{id}
+    </update>
+
+    <update id="delete">
+        UPDATE tb_material SET del_flag = #{DEL_FLAG_DELETE} WHERE id = #{id}
+    </update>
+
+</mapper>

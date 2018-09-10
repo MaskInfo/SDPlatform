@@ -27,12 +27,12 @@ public class RequestHeaderInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String accessToken = request.getHeader("accessToken");
-
-        String val = stringRedisTemplate.boundValueOps(accessToken).get();
-        if(StringUtils.isBlank(val)){
+        if(!StringUtils.isEmpty(accessToken)){
+            //String val = stringRedisTemplate.boundValueOps(accessToken).get();
+       /* if(StringUtils.isBlank(val)){
             throw new BussinessException(ResponseConstant.ACCESSTOKEN_INVALID.getCode(), ResponseConstant.ACCESSTOKEN_INVALID.getMsg());
+        }*/
         }
-
         return super.preHandle(request, response, handler);
     }
 }

@@ -10,18 +10,37 @@
         a.del_flag AS "delFlag",
 		a.SALE_PRICE AS "salcePrice",
 		a.TOTAL_DURATION AS "totalDuration",
-		a.TEACH_ID AS "teachId",
 		a.COURSE_TYPE AS "courseType",
 		a.COURSE_NAME AS "courseName",
 		a.COURSE_RESUME AS "courseResume",
-		a.BASE_PRICE AS "basePrice"
+		a.BASE_PRICE AS "basePrice",
+		a.img_Url as "imgUrl",
+		a.teach_id as "teachId",
+		a.start_time as "startTime"
     </sql>
+
+    <resultMap id="baseMap" type="cn.org.upthink.entity.Course">
+        <id column="id" property="id"/>
+        <result column="createDate" property="createDate"/>
+        <result column="updateDate" property="updateDate"/>
+        <result column="remarks" property="remarks"/>
+        <result column="delFlag" property="delFlag"/>
+        <result column="salcePrice" property="salcePrice"/>
+        <result column="totalDuration" property="totalDuration"/>
+        <result column="courseType" property="courseType"/>
+        <result column="courseName" property="courseName"/>
+        <result column="courseResume" property="courseResume"/>
+        <result column="basePrice" property="basePrice"/>
+        <result column="imgUrl" property="imgUrl"/>
+        <result column="startTime" property="startTime"/>
+        <association property="teacher" javaType="cn.org.upthink.entity.Expert" select="cn.org.upthink.mapper.ExpertMapper.find" column="teachId"></association>
+    </resultMap>
 
     <sql id="courseJoins">
         <!--todo-->
     </sql>
 
-    <select id="get" resultType="cn.org.upthink.entity.Course">
+    <select id="get" resultMap="baseMap">
         SELECT
         <include refid="courseDaoColumns"/>
         FROM tb_course a
@@ -29,12 +48,12 @@
     </select>
 
 
-    <select id="findList" resultType="cn.org.upthink.entity.Course">
+    <select id="findList" resultMap="baseMap">
         SELECT
         <include refid="courseDaoColumns"/>
         FROM tb_course a
         <if test="userId != null and userId !=''">
-            join rela_user_course b on a.course_id = b.course_id
+            join rela_user_course b on a.id = b.course_id
         </if>
         <where>
             a.del_flag = #{delFlag}
@@ -42,14 +61,17 @@
                 AND a.name LIKE
                 <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
             </if>-->
+            <if test="id != null">
+                AND a.id = #{id}
+            </if>
              <if test="salcePrice != null">
                 AND a.SALE_PRICE LIKE CONCAT('%', #{salcePrice}, '%')
              </if>
              <if test="totalDuration != null">
                 AND a.TOTAL_DURATION LIKE CONCAT('%', #{totalDuration}, '%')
              </if>
-             <if test="teachId != null and teachId != ''">
-                AND a.TEACH_ID =#{teachId}
+             <if test="teacher != null and teacher.id != null and teacher.id != ''">
+                AND a.TEACH_ID =#{teacher.id}
              </if>
              <if test="courseType != null and courseType != -1">
                 AND a.COURSE_TYPE = #{courseType}
@@ -84,7 +106,9 @@
 			COURSE_TYPE,
 			COURSE_NAME,
 			COURSE_RESUME,
-			BASE_PRICE
+			BASE_PRICE,
+			img_url,
+			start_time
         ) VALUES (
 			#{id},
 			#{createDate},
@@ -93,11 +117,13 @@
 			#{delFlag},
 		    #{salcePrice},
 		    #{totalDuration},
-		    #{teachId},
+		    #{teacher.id},
 		    #{courseType},
 		    #{courseName},
 		    #{courseResume},
-		    #{basePrice}
+		    #{basePrice},
+		    #{imgUrl},
+		    #{startTime}
         )
     </insert>
     <insert id="bind">
@@ -111,11 +137,13 @@
         <trim prefix="SET" suffixOverrides=",">
 		   <if test="salcePrice!=null">SALE_PRICE = #{salcePrice},</if>
 		   <if test="totalDuration!=null">TOTAL_DURATION = #{totalDuration},</if>
-		   <if test="teachId!=null">TEACH_ID = #{teachId},</if>
+		   <if test="teacher.id!=null">TEACH_ID = #{teacher.id},</if>
 		   <if test="courseType!=null">COURSE_TYPE = #{courseType},</if>
 		   <if test="courseName!=null">COURSE_NAME = #{courseName},</if>
 		   <if test="courseResume!=null">COURSE_RESUME = #{courseResume},</if>
 		   <if test="basePrice!=null">BASE_PRICE = #{basePrice},</if>
+		   <if test="imgUrl!=null">img_url = #{imgUrl},</if>
+		   <if test="startTime!=null">start_Time = #{startTime},</if>
 		</trim>
         WHERE id = #{id}
     </update>

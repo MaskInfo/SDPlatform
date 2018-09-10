@@ -44,7 +44,6 @@ public class RequestLoggerAspect {
         ApiOperation apiOperation = getApiOperationByRequestSignature(joinPoint);
         RequestLogger requestLogger = new RequestLogger(apiOperation != null ? apiOperation.value() : "", new Date());
         //保存日志
-        System.out.println(resp.toString());
         BaseResult baseResult;
         if(MediaType.APPLICATION_JSON_UTF8_VALUE.equals(apiOperation != null ? apiOperation.produces() : MediaType.APPLICATION_JSON_UTF8_VALUE)){
             baseResult = JSON.parseObject(resp.toString(), BaseResult.class);

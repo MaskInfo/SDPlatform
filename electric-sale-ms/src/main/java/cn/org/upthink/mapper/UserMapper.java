@@ -10,4 +10,5 @@ public interface UserMapper extends CrudDao<User> {
     void insertUser_Role(User user);
 
     User getByOpenId(String openId);
+    User find(User user);
 }

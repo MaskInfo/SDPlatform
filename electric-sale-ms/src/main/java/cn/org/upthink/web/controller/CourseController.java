@@ -1,8 +1,12 @@
 package cn.org.upthink.web.controller;
 
+import cn.org.upthink.entity.Expert;
+import cn.org.upthink.entity.User;
 import cn.org.upthink.exception.BussinessException;
+import cn.org.upthink.helper.LoginTokenHelper;
 import cn.org.upthink.model.dto.CourseFormDTO;
 import cn.org.upthink.model.dto.CourseQueryDTO;
+import cn.org.upthink.model.dto.UserFormDTO;
 import cn.org.upthink.persistence.mybatis.dto.Page;
 import cn.org.upthink.util.QiniuUtil;
 import cn.org.upthink.web.BaseController;
@@ -21,6 +25,7 @@ import io.swagger.annotations.ApiParam;
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 //import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
 * Created by rover on 2018-06-08.
@@ -42,7 +49,8 @@ public class CourseController extends BaseController {
 
     @Autowired
     private CourseService courseService;
-
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
     @ApiOperation(value ="获取course详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String"),
@@ -50,8 +58,20 @@ public class CourseController extends BaseController {
     })
 
     @GetMapping(value = "/course/{id}", produces = "application/json;charset=UTF-8")
-    public BaseResult<?> findCourse(@PathVariable("id") String id) {
-        return getBaseResultSuccess(courseService.get(id), "有效对象");
+    public BaseResult<?> findCourse(@PathVariable("id") String id,HttpServletRequest request) {
+        Course course = courseService.get(id);
+        //查询当前用户已购买课程
+        UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate, request);
+        if(userInfo != null){
+            Course query = new Course();
+            query.setUserId(userInfo.getUserId());
+            query.setId(id);
+            List<Course> cL = courseService.findList(query);
+            if(!cL.isEmpty()){
+                course.setBuyState(true);
+            }
+        }
+        return getBaseResultSuccess(course, "有效对象");
     }
 
     @ApiOperation(value = "删除Course信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -89,11 +109,15 @@ public class CourseController extends BaseController {
         Course course = new Course();
         course.setSalcePrice(courseFormDTO.getSalcePrice());
         course.setTotalDuration(courseFormDTO.getTotalDuration());
-        course.setTeachId(courseFormDTO.getTeachId());
+        Expert user = new Expert();
+        user.setId(courseFormDTO.getTeachId());
+        course.setTeacher(user);
         course.setCourseType(courseFormDTO.getCourseType());
         course.setCourseName(courseFormDTO.getCourseName());
         course.setCourseResume(courseFormDTO.getCourseResume());
         course.setBasePrice(courseFormDTO.getBasePrice());
+        course.setImgUrl(courseFormDTO.getImgUrl());
+        course.setStartTime(courseFormDTO.getStartTime());
         courseService.save(course);
         return getBaseResultSuccess(course, "保存Course成功");
     }
@@ -114,11 +138,15 @@ public class CourseController extends BaseController {
         course.setId(id);
         course.setSalcePrice(courseFormDTO.getSalcePrice());
         course.setTotalDuration(courseFormDTO.getTotalDuration());
-        course.setTeachId(courseFormDTO.getTeachId());
+        Expert user = new Expert();
+        user.setId(courseFormDTO.getTeachId());
+        course.setTeacher(user);
         course.setCourseType(courseFormDTO.getCourseType());
         course.setCourseName(courseFormDTO.getCourseName());
         course.setCourseResume(courseFormDTO.getCourseResume());
         course.setBasePrice(courseFormDTO.getBasePrice());
+        course.setImgUrl(courseFormDTO.getImgUrl());
+        course.setStartTime(courseFormDTO.getStartTime());
         courseService.save(course);
         return getBaseResultSuccess(course, "保存Course成功");
     }
@@ -132,13 +160,49 @@ public class CourseController extends BaseController {
         Course course = new Course();
         course.setSalcePrice(courseQueryDTO.getSalcePrice());
         course.setTotalDuration(courseQueryDTO.getTotalDuration());
-        course.setTeachId(courseQueryDTO.getTeachId());
+        Expert user = new Expert();
+        user.setId(courseQueryDTO.getTeachId());
+        course.setTeacher(user);
         course.setCourseType(courseQueryDTO.getCourseType());
         course.setCourseName(courseQueryDTO.getCourseName());
         course.setCourseResume(courseQueryDTO.getCourseResume());
         course.setBasePrice(courseQueryDTO.getBasePrice());
-        course.setUserId(courseQueryDTO.getUserId());
         Page<Course> page = courseService.findPage(new Page<Course>(request, response), course);
+
+        //查询当前用户已购买课程
+        UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate, request);
+        if(userInfo != null){
+            Course query = new Course();
+            query.setUserId(userInfo.getUserId());
+            Page<Course> buyPage = courseService.findPage(new Page<Course>(request, response), query);
+            Set<String> idSet = buyPage.getList().stream().map(s -> s.getId()).collect(Collectors.toSet());
+            //设置状态
+            page.getList().forEach(s->{
+                if(idSet.contains(s.getId())){
+                    s.setBuyState(true);
+                }else {
+                    s.setBuyState(false);
+                }
+            });
+        }
+
+        return getBaseResultSuccess(page, "查询数据成功");
+    }
+
+    @ApiOperation(value = "已购买课程列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
+    @GetMapping(value = "/course/buy", produces = "application/json;charset=UTF-8")
+    public BaseResult<?> listCourseByUser(HttpServletRequest request, HttpServletResponse response,Integer type) {
+
+        Course course = new Course();
+        UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate, request);
+        course.setUserId(userInfo.getUserId());
+        course.setCourseType(type);
+        Page<Course> page = courseService.findPage(new Page<Course>(request, response), course);
+
+
 
         return getBaseResultSuccess(page, "查询数据成功");
     }
