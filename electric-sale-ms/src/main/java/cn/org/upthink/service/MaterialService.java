@@ -43,4 +43,7 @@ public class MaterialService extends BaseCrudService<MaterialMapper, Material> {
         super.delete(material);
     }
 
+    public void bind(String id, String operationId) {
+        this.dao.bind(id,operationId);
+    }
 }

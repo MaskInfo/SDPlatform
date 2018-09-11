@@ -32,6 +32,9 @@
         SELECT
         <include refid="materialDaoColumns"/>
         FROM tb_material a
+        <if test="userId !=null and userId != ''">
+            left join rela_user_material b on a.id= b.material_id
+        </if>
         <where>
             a.del_flag = #{delFlag}
             <!--<if test="name != null and name != ''">
@@ -56,6 +59,9 @@
              <if test="basePrice != null and basePrice != ''">
                 AND a.BASE_PRICE LIKE CONCAT('%', #{basePrice}, '%')
              </if>
+            <if test="userId != null and userId != ''">
+                and b. user_Id = #{b.userId}
+            </if>
 		${sqlMap.dsf}
         </where>
         ORDER BY a.update_date DESC
@@ -87,6 +93,10 @@
 		    #{size},
 		    #{basePrice}
         )
+    </insert>
+    <insert id="bind">
+        insert into rela_user_material(material_id,user_id)
+        value(#{materialId},#{userId})
     </insert>
 
     <update id="update">

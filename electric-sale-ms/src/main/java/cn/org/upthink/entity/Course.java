@@ -27,8 +27,9 @@ public class Course extends BaseDataEntity<Course> {
     private Integer courseType;
     private String imgUrl;
     private Date startTime;
+    private Date endTime;
 
-
+    private boolean isExpire;
     private boolean buyState; //前端需要
     private String userId;
 }

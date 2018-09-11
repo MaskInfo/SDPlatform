@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Response;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,29 @@ public class QuestionController extends BaseController {
             return getBaseResultSuccess(new ArrayList<Question>(), "没有查询到有效的数据。");
         }
         return getBaseResultSuccess(page, "查询数据成功");
+    }
+
+    @ApiOperation(value = "问题回答", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
+    @RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.PUT)
+    public BaseResult<?> listQuestion(String questionId,String answerDetail) {
+        Question question =new Question();
+        question.setId(questionId);
+        Question q = questionService.get(question);
+        if(q==null){
+            return getBaseResultFail(false, "操作失败，不存在的question。请传入有效的Course的ID。");
+        }
+        if(!question.isPay() || !question.isAnswer()){
+            return getBaseResultFail(false, "操作失败，问题未支付 或 已回答");
+        }
+        question.setAnsDate(new Date());
+        question.setAnswer(true);
+        question.setAnsDetail(answerDetail);
+        questionService.save(question);
+
+        return getBaseResultSuccess(question, "回答成功");
     }
 
 }

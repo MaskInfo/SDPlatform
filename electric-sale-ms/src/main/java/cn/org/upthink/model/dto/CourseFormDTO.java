@@ -37,6 +37,7 @@ public class CourseFormDTO implements Serializable {
     private BigDecimal basePrice;
     private String imgUrl;
     private Date startTime;
+    private Date endTime;
 
     /**手动增加getter,setter*/
 

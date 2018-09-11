@@ -16,7 +16,8 @@
 		a.BASE_PRICE AS "basePrice",
 		a.img_Url as "imgUrl",
 		a.teach_id as "teachId",
-		a.start_time as "startTime"
+		a.start_time as "startTime",
+		a.end_time as "endTime"
     </sql>
 
     <resultMap id="baseMap" type="cn.org.upthink.entity.Course">
@@ -108,7 +109,8 @@
 			COURSE_RESUME,
 			BASE_PRICE,
 			img_url,
-			start_time
+			start_time,
+			end_time
         ) VALUES (
 			#{id},
 			#{createDate},
@@ -123,7 +125,8 @@
 		    #{courseResume},
 		    #{basePrice},
 		    #{imgUrl},
-		    #{startTime}
+		    #{startTime},
+		    #{endTime}
         )
     </insert>
     <insert id="bind">
@@ -144,6 +147,7 @@
 		   <if test="basePrice!=null">BASE_PRICE = #{basePrice},</if>
 		   <if test="imgUrl!=null">img_url = #{imgUrl},</if>
 		   <if test="startTime!=null">start_Time = #{startTime},</if>
+		   <if test="endTime!=null">end_time = #{endTime},</if>
 		</trim>
         WHERE id = #{id}
     </update>

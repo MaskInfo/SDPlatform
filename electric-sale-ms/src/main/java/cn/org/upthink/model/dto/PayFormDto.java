@@ -31,8 +31,14 @@ public class PayFormDto implements Serializable {
 
     @ApiModelProperty(value="问题标题", name="quesTitle", notes = "支付类型为ASK，必填")
     private String quesTitle;
+    @ApiModelProperty(value="回答人id", name="quesTitle", notes = "支付类型为ASK，必填")
+    private String answerId;
+
 
     @ApiModelProperty(value="课程ID", name="courseId", notes = "支付类型为COURSE，必填")
     private String courseId;
+
+    @ApiModelProperty(value="课程ID", name="courseId", notes = "支付类型为MATERIAL，必填")
+    private String materialId;
 
 }

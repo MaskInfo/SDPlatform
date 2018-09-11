@@ -12,5 +12,6 @@ import lombok.Getter;
 @Getter
 public enum PayTypeEnum {
     COURSE,
-    ASK
+    ASK,
+    MATERIAL
 }

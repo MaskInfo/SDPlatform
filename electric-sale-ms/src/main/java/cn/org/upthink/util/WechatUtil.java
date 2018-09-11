@@ -52,6 +52,7 @@ public class WechatUtil {
         map.put("payType", payFormDto.getPayType());
         map.put("operationId", operationId);
         map.put("fee", payFormDto.getFee());
+        map.put("anserId",payFormDto.getAnswerId());
         String attach = JSON.toJSONString(map);
         return attach;
     }

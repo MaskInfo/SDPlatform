@@ -22,4 +22,7 @@ public class Material extends BaseDataEntity<Material> {
     private String downloadUrl;
     @TableField(name = "img_url",isQuery = true,required = true,remark = "图片地址")
     private String imgUrl;
+    private String userId;
+
+    private boolean buyState;
 }

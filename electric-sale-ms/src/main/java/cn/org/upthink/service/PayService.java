@@ -42,6 +42,8 @@ public class PayService {
     private String key;
     @Value("${wechat.perparePayUrl}")
     private String preparePayUrl;
+    @Autowired
+    private MaterialService materialService;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -59,8 +61,10 @@ public class PayService {
         String operationId;
         if(PayTypeEnum.ASK.name().equals(payFormDto.getPayType())){
             operationId = String.valueOf(System.currentTimeMillis());
-        }else{
+        }else if(PayTypeEnum.COURSE.name().equals(payFormDto.getPayType())){
             operationId = payFormDto.getCourseId();
+        }else {
+            operationId = payFormDto.getMaterialId();
         }
         //拼接参数
         String params = this.getParams(request, payFormDto, operationId);
@@ -142,19 +146,31 @@ public class PayService {
             //根据operationId进行操作
             String payType = attachData.get("payType");
             String operationId = attachData.get("operationId");
+            String anserId = attachData.get("anserId");
             if (payType.equals(PayTypeEnum.ASK.name())) {
                 Question question = questionService.get(operationId);
                 if(Objects.nonNull(question)){
                     question.setPay(true);
+                    User anser = new User();
+                    anser.setId(anserId);
+                    question.setAnswerer(anser);
                     questionService.save(question);
                 }
-            } else {
+            } else if(payType.equals(PayTypeEnum.COURSE.name())) {
                 String openid = payNotifyDto.getOpenid();
                 User user = userService.getUserByOpenId(openid);
                 if(Objects.isNull(user)){
                     return WechatUtil.returnXmlData(WechatUtil.FAIL, "openId无效");
                 }
                 courseService.bind(user.getId(), operationId);
+            }else {
+                String openid = payNotifyDto.getOpenid();
+                User user = userService.getUserByOpenId(openid);
+                if(Objects.isNull(user)){
+                    return WechatUtil.returnXmlData(WechatUtil.FAIL, "openId无效");
+                }
+
+                materialService.bind(user.getId(), operationId);
             }
 
             return WechatUtil.returnXmlData(WechatUtil.SUCCESS, "OK");

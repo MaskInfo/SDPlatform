@@ -1,7 +1,10 @@
 package cn.org.upthink.web.controller;
 
+import cn.org.upthink.entity.Course;
+import cn.org.upthink.helper.LoginTokenHelper;
 import cn.org.upthink.model.dto.MaterialFormDTO;
 import cn.org.upthink.model.dto.MaterialQueryDTO;
+import cn.org.upthink.model.dto.UserFormDTO;
 import cn.org.upthink.persistence.mybatis.dto.Page;
 import cn.org.upthink.web.BaseController;
 import cn.org.upthink.common.dto.BaseResult;
@@ -18,6 +21,7 @@ import io.swagger.annotations.ApiParam;
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 //import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
 * Created by rover on 2018-06-08.
@@ -37,6 +43,8 @@ public class MaterialController extends BaseController {
 
     @Autowired
     private MaterialService materialService;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @ApiOperation(value ="获取material详细信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
@@ -137,6 +145,50 @@ public class MaterialController extends BaseController {
             Page<Material> page = materialService.findPage(new Page<Material>(request, response), material);
             if(page.getList().isEmpty()){
                 return getBaseResultSuccess(new ArrayList<Material>(), "没有查询到有效的数据。");
+            }
+
+            page.getList().stream().forEach(s->{
+
+            });
+
+            return getBaseResultSuccess(page, "查询数据成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return getBaseResultFail(null, "查询数据失败");
+    }
+    @ApiOperation(value = "Material购买列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/material/buy", produces = "application/json;charset=UTF-8")
+    public BaseResult<?> listMaterialBuy(HttpServletRequest request, HttpServletResponse response, @ApiParam MaterialQueryDTO materialQueryDTO) {
+        try {
+            Material material = new Material();
+            material.setSalePrice(materialQueryDTO.getSalePrice());
+            material.setDownloadUrl(materialQueryDTO.getDownloadUrl());
+            material.setMaterialTitle(materialQueryDTO.getMaterialTitle());
+            material.setImgUrl(materialQueryDTO.getImgUrl());
+            material.setSize(materialQueryDTO.getSize());
+            material.setBasePrice(materialQueryDTO.getBasePrice());
+            //material.setUserId(userInfo.getUserId());
+            Page<Material> page = materialService.findPage(new Page<Material>(request, response), material);
+            if(page.getList().isEmpty()){
+                return getBaseResultSuccess(new ArrayList<Material>(), "没有查询到有效的数据。");
+            }
+            //设置购买状态
+            //查询当前用户已购买课程
+            UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate, request);
+            if(userInfo != null){
+                Material query = new Material();
+                query.setUserId(userInfo.getUserId());
+                Page<Material> buyPage = materialService.findPage(new Page<Material>(request, response), query);
+                Set<String> idSet = buyPage.getList().stream().map(s -> s.getId()).collect(Collectors.toSet());
+                //设置状态
+                page.getList().forEach(s->{
+                    if(idSet.contains(s.getId())){
+                        s.setBuyState(true);
+                    }else {
+                        s.setBuyState(false);
+                    }
+                });
             }
             return getBaseResultSuccess(page, "查询数据成功");
         } catch (Exception e) {

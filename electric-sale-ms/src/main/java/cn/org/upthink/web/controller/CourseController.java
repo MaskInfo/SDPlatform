@@ -33,10 +33,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -169,6 +166,15 @@ public class CourseController extends BaseController {
         course.setBasePrice(courseQueryDTO.getBasePrice());
         Page<Course> page = courseService.findPage(new Page<Course>(request, response), course);
 
+        Date now = new Date();
+        //线下课程开课状态设置
+        page.getList().stream().forEach(s->{
+            if(s.getEndTime() != null && s.getEndTime().before(now)){
+                s.setExpire(true);
+                return;
+            }
+            s.setExpire(false);
+        });
         //查询当前用户已购买课程
         UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate, request);
         if(userInfo != null){
