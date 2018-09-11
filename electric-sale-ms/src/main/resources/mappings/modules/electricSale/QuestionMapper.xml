@@ -12,6 +12,8 @@
         <result column="question_date" property="quesDate"/>
         <result column="answer_date" property="ansDate"/>
         <result column="ans_detail" property="ansDetail"/>
+        <result column="is_answer" property="answer"/>
+        <result column="is_pay" property="pay"/>
 
         <association property="answerer" select="cn.org.upthink.mapper.UserMapper.get" column="answerer_id"/>
         <association property="questioner" select="cn.org.upthink.mapper.UserMapper.get" column="questioner_id"/>
@@ -28,7 +30,9 @@
 		a.answer_date,
 		a.ans_detail,
 		a.answerer_id,
-		a.questioner_id
+		a.questioner_id,
+		a.is_answer,
+		a.is_pay
     </sql>
 
     <sql id="questionJoins">
@@ -84,7 +88,7 @@
         </choose>
     </select>-->
 
-    <select id="get" resultType="cn.org.upthink.entity.Question">
+    <select id="get" resultMap="resultMap">
         SELECT
         <include refid="questionDaoColumns"/>
         FROM tb_question a

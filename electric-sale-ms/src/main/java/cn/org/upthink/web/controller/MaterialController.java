@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 */
 @Api(value="materialApi", description = "material的接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "/redpacket")
+@RequestMapping(value = "/v1")
 public class MaterialController extends BaseController {
 
     @Autowired
@@ -131,7 +131,7 @@ public class MaterialController extends BaseController {
         return getBaseResultFail(null, "保存失败");
     }
 
-    @ApiOperation(value = "Material列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    /*@ApiOperation(value = "Material列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @GetMapping(value = "/material", produces = "application/json;charset=UTF-8")
     public BaseResult<?> listMaterial(HttpServletRequest request, HttpServletResponse response, @ApiParam MaterialQueryDTO materialQueryDTO) {
         try {
@@ -156,9 +156,9 @@ public class MaterialController extends BaseController {
             e.printStackTrace();
         }
         return getBaseResultFail(null, "查询数据失败");
-    }
+    }*/
     @ApiOperation(value = "Material购买列表查询", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @GetMapping(value = "/material/buy", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/material", produces = "application/json;charset=UTF-8")
     public BaseResult<?> listMaterialBuy(HttpServletRequest request, HttpServletResponse response, @ApiParam MaterialQueryDTO materialQueryDTO) {
         try {
             Material material = new Material();

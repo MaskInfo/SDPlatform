@@ -55,8 +55,11 @@ public class PayController extends BaseController {
         if(payType.equals(PayTypeEnum.ASK.name())){
             Preconditions.checkState(StringUtils.isNotBlank(payFormDto.getQuesDetail()), ResponseConstant.INVALID_PARAM.getMsg());
             Preconditions.checkState(StringUtils.isNotBlank(payFormDto.getQuesTitle()), ResponseConstant.INVALID_PARAM.getMsg());
-        }else{
+        }else if(payType.equals(PayTypeEnum.COURSE.name())){
             Preconditions.checkState(StringUtils.isNotBlank(payFormDto.getCourseId()), ResponseConstant.INVALID_PARAM.getMsg());
+        }else {
+            Preconditions.checkState(StringUtils.isNotBlank(payFormDto.getMaterialId()), ResponseConstant.INVALID_PARAM.getMsg());
+
         }
 
         Map<String, String> ret = payService.preparePay(request, payFormDto);

@@ -63,10 +63,11 @@ public class QuestionController extends BaseController {
         Question question =new Question();
         question.setId(questionId);
         Question q = questionService.get(question);
-        if(q==null){
-            return getBaseResultFail(false, "操作失败，不存在的question。请传入有效的Course的ID。");
+        System.out.println(q);
+        if(q == null){
+            return getBaseResultFail(false, "操作失败，不存在的question。请传入有效的question的ID。");
         }
-        if(!question.isPay() || !question.isAnswer()){
+        if(!q.isPay() || q.isAnswer()){
             return getBaseResultFail(false, "操作失败，问题未支付 或 已回答");
         }
         question.setAnsDate(new Date());
@@ -75,6 +76,21 @@ public class QuestionController extends BaseController {
         questionService.save(question);
 
         return getBaseResultSuccess(question, "回答成功");
+    }
+
+    @ApiOperation(value = "查询问题详情", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
+    @RequestMapping(produces = "application/json;charset=UTF-8",value = "/{id}",method = RequestMethod.PUT)
+    public BaseResult<?> listQuestion(@PathVariable("id") String id) {
+        Question question =new Question();
+        question.setId(id);
+        Question q = questionService.get(question);
+        if(q == null){
+            return getBaseResultFail(null, "操作失败，不存在的question。请传入有效的question的ID。");
+        }
+        return getBaseResultSuccess(q, "查询成功");
     }
 
 }

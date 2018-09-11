@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel(value="Material对象", description="")
-public class MaterialQueryDTO implements Serializable {
+public class MaterialQueryDTO extends BaseQueryDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

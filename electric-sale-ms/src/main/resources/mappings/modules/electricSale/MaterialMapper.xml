@@ -60,7 +60,7 @@
                 AND a.BASE_PRICE LIKE CONCAT('%', #{basePrice}, '%')
              </if>
             <if test="userId != null and userId != ''">
-                and b. user_Id = #{b.userId}
+                and b.user_Id = #{userId}
             </if>
 		${sqlMap.dsf}
         </where>
