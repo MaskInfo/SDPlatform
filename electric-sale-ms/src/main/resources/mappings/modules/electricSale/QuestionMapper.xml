@@ -59,12 +59,10 @@
             </if>
             <if test="answerer != null">
                 AND a.answerer_id = #{answerer.id}
+                AND a.is_answer = #{answer}
             </if>
-            <if test="isPay">
-                AND a.is_pay = #{isPay}
-            </if>
-            <if test="isAnswer">
-                AND a.is_answer = #{isAnswer}
+            <if test="pay">
+                AND a.is_pay = #{pay}
             </if>
             ${sqlMap.dsf}
         </where>

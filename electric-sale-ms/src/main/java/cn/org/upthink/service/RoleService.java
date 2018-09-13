@@ -51,4 +51,11 @@ public class RoleService extends BaseCrudService<RoleMapper, Role> {
         return null;
     }
 
+    /**
+     * 绑定角色
+     * @param userId
+     */
+    public void bind(String userId, String roleId) {
+        this.dao.bind(userId,roleId);
+    }
 }

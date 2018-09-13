@@ -6,6 +6,8 @@ import cn.org.upthink.model.dto.MaterialFormDTO;
 import cn.org.upthink.model.dto.MaterialQueryDTO;
 import cn.org.upthink.model.dto.UserFormDTO;
 import cn.org.upthink.persistence.mybatis.dto.Page;
+import cn.org.upthink.util.QiniuMaterialUtil;
+import cn.org.upthink.util.QiniuVideoUtil;
 import cn.org.upthink.web.BaseController;
 import cn.org.upthink.common.dto.BaseResult;
 import cn.org.upthink.entity.Material;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,7 +67,16 @@ public class MaterialController extends BaseController {
             return getBaseResultFail(null, "无效的id，没有获取到对象");
         }
     }
+    @ApiOperation(value="上传学习资料", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
+    @PostMapping(value = "/material/upload", produces = "application/json;charset=UTF-8")
+    public BaseResult<?> uploadMaterial(HttpServletRequest request,@ApiParam("学习资料") MultipartFile file) {
+        String url = QiniuMaterialUtil.upLoadToQiNiu(request, file);
 
+        return getBaseResultSuccess(url, "上传成功");
+    }
     @ApiOperation(value = "删除Material信息", notes="", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id编号", required = true, dataType = "String")

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,12 +46,9 @@ public class ExpertController extends BaseController {
         return getBaseResultSuccess(true, "申请成功");
     }
     @ApiOperation(value = "专家审核", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
-    })
     @RequestMapping(value = "/audit",produces = "application/json;charset=UTF-8", method = RequestMethod.PUT)
-    public BaseResult<?> audit(HttpServletRequest request, @ApiParam String expertId,@ApiParam Integer state) {
-        expertService.audit(expertId, state);
+    public BaseResult<?> audit(HttpServletRequest request, @ApiParam @RequestParam("expertId") String expertId,@ApiParam @RequestParam("state") Integer state,@RequestParam("price") String price) {
+        expertService.audit(expertId, state,price);
         return getBaseResultSuccess(true, "审核完成");
     }
     @ApiOperation(value = "专家列表查询", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

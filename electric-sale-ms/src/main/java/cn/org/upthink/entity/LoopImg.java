@@ -4,6 +4,7 @@ package cn.org.upthink.entity;
 import cn.org.upthink.gen.annotation.TableField;
 import cn.org.upthink.persistence.mybatis.entity.BaseDataEntity;
 import cn.org.upthink.persistence.mybatis.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties("handler")
 public class LoopImg extends BaseDataEntity<LoopImg> {
     @TableField(name = "loop_name",isQuery = true,required = true,remark = "轮播图名称")
     private String loopName;

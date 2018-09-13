@@ -36,6 +36,8 @@ public class QuestionQueryDTO extends BaseQueryDTO implements Serializable {
     @ApiModelProperty(value="回答详情", name="ansDetail", required=false)
     private String ansDetail;
 
+    private boolean answer;
+
     /**手动增加getter,setter*/
 
 }

@@ -20,20 +20,19 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 /**
  * Created by rover on 2017/12/9.
  */
-public class QiniuUtil {
+public class QiniuVideoUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(QiniuUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QiniuVideoUtil.class);
 
     private static String ACCESS_KEY = "WJBKijRUR4rk0W8dHCS2M0g6YdZQ-FSBEvN20OGT";
     private static String SECRET_KEY = "1GNzY3ToCzuNsWDBVnYj8HRvfYhRJ1EmJqce-PDv";
-    public static String UP_HOST = "http://pdtar86ku.bkt.clouddn.com/";
+    public static String UP_HOST = "http://video.enernet.mobi/";
     //空间名
     private static String BUCKET = "upthink-video";
     private static Auth auth = null;
@@ -376,7 +375,7 @@ public class QiniuUtil {
                 file.transferTo(localFile);
                 //将图片上传到七牛
                 String key = hashPath+fileName;
-                boolean upload = QiniuUtil.upload(BUCKET, key, localFile);
+                boolean upload = QiniuVideoUtil.upload(BUCKET, key, localFile);
                 //查看是否上传成功
                 System.out.println("upload是否成功：=================>>>" + upload);
 
@@ -425,7 +424,7 @@ public class QiniuUtil {
             String fileName = uuid + suffix;
             //将图片上传到七牛
             String key = hashPath + fileName;
-            boolean upload = QiniuUtil.upload(BUCKET, key, inputStream);
+            boolean upload = QiniuVideoUtil.upload(BUCKET, key, inputStream);
             //查看是否上传成功
             LOGGER.info("upload是否成功：=================>>>" + upload);
             //添加七牛的域名
@@ -472,7 +471,7 @@ public class QiniuUtil {
                 String fileName = uuid + suffix;
                 //将图片上传到七牛
                 String key = hashPath + fileName;
-                boolean upload = QiniuUtil.upload(BUCKET, key, inputStream);
+                boolean upload = QiniuVideoUtil.upload(BUCKET, key, inputStream);
                 //查看是否上传成功
                 LOGGER.info("upload是否成功：=================>>>" + upload);
                 //添加七牛的域名

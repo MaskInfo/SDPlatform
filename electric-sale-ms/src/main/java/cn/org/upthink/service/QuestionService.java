@@ -64,10 +64,23 @@ public class QuestionService extends BaseCrudService<QuestionMapper, Question> {
         user.setId(userInfo.getUserId());
         question.setQuestioner(user);
         question.setPay(true);
-
+        question.setAnswer(questionQueryDTO.isAnswer());
         return this.findPage(new Page<Question>(request, response), question);
     }
 
+    @Transactional(readOnly = false)
+    public Page<Question> listExpert(QuestionQueryDTO questionQueryDTO, HttpServletRequest request, HttpServletResponse response) {
+        UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate, request);
+
+        Question question = new Question();
+        User user = new User();
+        user.setId(userInfo.getUserId());
+        question.setAnswerer(user);
+        question.setAnswer(questionQueryDTO.isAnswer());
+        question.setPay(true);
+
+        return this.findPage(new Page<Question>(request, response), question);
+    }
     public void save(String operationId, HttpServletRequest request, PayFormDto payFormDto) {
         Question q = new Question();
         q.setId(operationId);

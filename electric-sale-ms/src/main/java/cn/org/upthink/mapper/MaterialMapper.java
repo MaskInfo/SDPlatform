@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Param;
 
 @MyBatisDao
 public interface MaterialMapper extends CrudDao<Material> {
-    void bind(@Param("materialId") String materialId, @Param("userId") String userId);
+    void bind( @Param("userId") String userId,@Param("materialId") String materialId);
 }

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +34,8 @@ public class ExpertService extends BaseCrudService<ExpertMapper, Expert> {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private RoleService roleService;
 
     @Transactional(readOnly = false)
     public Page<Expert> findPage(Page<Expert> page, Expert expert) {
@@ -73,13 +76,27 @@ public class ExpertService extends BaseCrudService<ExpertMapper, Expert> {
 
     }
 
-    public Expert audit(String expertId, Integer state) {
+    @Transactional(readOnly = false)
+    public Expert audit(String expertId, Integer state, String price) {
         Expert expert = this.dao.find(expertId);
         if(expert == null){
             return null;
         }
+        if(expert.getState().equals(ExpertStateEnum.AUDIT.getStateCode())){
+            return expert;
+        }
         expert.setState(state);
+        expert.setQuizPrice(price);
         this.save(expert);
+        //插入专家角色
+        if(state.equals(ExpertStateEnum.AUDIT.getStateCode())){
+            Role role = new Role();
+            role.setRoleType(RoleTypeEnum.EXPERT.getType());
+            List<Role> list = roleService.findList(role);
+            Role r = list.get(0);
+            roleService.bind(expert.getUserId(),r.getId());
+        }
+
         return expert;
     }
 }

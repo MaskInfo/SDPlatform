@@ -1,7 +1,9 @@
 package cn.org.upthink.web.controller;
 
+import cn.org.upthink.helper.LoginTokenHelper;
 import cn.org.upthink.model.dto.RoleFormDTO;
 import cn.org.upthink.model.dto.RoleQueryDTO;
+import cn.org.upthink.model.dto.UserFormDTO;
 import cn.org.upthink.persistence.mybatis.dto.Page;
 import cn.org.upthink.web.BaseController;
 import cn.org.upthink.common.dto.BaseResult;
@@ -18,6 +20,7 @@ import io.swagger.annotations.ApiParam;
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 //import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +39,8 @@ public class RoleController extends BaseController {
 
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @GetMapping(value = "/role/{id}", produces = "application/json;charset=UTF-8")
     public BaseResult<?> findRole(@PathVariable("id") String id) {
@@ -107,6 +112,25 @@ public class RoleController extends BaseController {
             Role role = new Role();
             role.setRoleName(roleQueryDTO.getRoleName());
             role.setRoleType(roleQueryDTO.getRoleType());
+            Page<Role> page = roleService.findPage(new Page<Role>(request, response), role);
+            if(page.getList().isEmpty()){
+                return getBaseResultSuccess(new ArrayList<Role>(), "没有查询到有效的数据。");
+            }
+            return getBaseResultSuccess(page, "查询数据成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return getBaseResultFail(null, "查询数据失败");
+    }
+    @GetMapping(value = "/role/user", produces = "application/json;charset=UTF-8")
+    public BaseResult<?> listRoleUser(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate, request);
+            if(userInfo == null){
+                return getBaseResultSuccess(null, "请登录。");
+            }
+            Role role = new Role();
+            role.setUserId(userInfo.getUserId());
             Page<Role> page = roleService.findPage(new Page<Role>(request, response), role);
             if(page.getList().isEmpty()){
                 return getBaseResultSuccess(new ArrayList<Role>(), "没有查询到有效的数据。");

@@ -2,6 +2,7 @@ package cn.org.upthink.entity;
 
 import cn.org.upthink.gen.annotation.TableField;
 import cn.org.upthink.persistence.mybatis.entity.BaseDataEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 
 @Getter@Setter
+@JsonIgnoreProperties("handler")
 public class Material extends BaseDataEntity<Material> {
     @TableField(name = "material_title",isQuery = true,required = true,remark = "资料名称")
     private String materialTitle;

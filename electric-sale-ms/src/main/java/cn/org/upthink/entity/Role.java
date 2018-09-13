@@ -17,4 +17,6 @@ public class Role extends BaseDataEntity<Role> {
     @TableField(name = "role_type",isQuery = true,required = true,remark = "角色类型")
     private Integer roleType;
 
+    private String userId;
+
 }

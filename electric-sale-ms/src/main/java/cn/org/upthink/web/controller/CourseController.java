@@ -1,14 +1,13 @@
 package cn.org.upthink.web.controller;
 
 import cn.org.upthink.entity.Expert;
-import cn.org.upthink.entity.User;
-import cn.org.upthink.exception.BussinessException;
 import cn.org.upthink.helper.LoginTokenHelper;
 import cn.org.upthink.model.dto.CourseFormDTO;
 import cn.org.upthink.model.dto.CourseQueryDTO;
 import cn.org.upthink.model.dto.UserFormDTO;
 import cn.org.upthink.persistence.mybatis.dto.Page;
-import cn.org.upthink.util.QiniuUtil;
+import cn.org.upthink.util.QiniuMaterialUtil;
+import cn.org.upthink.util.QiniuVideoUtil;
 import cn.org.upthink.web.BaseController;
 import cn.org.upthink.common.dto.BaseResult;
 import cn.org.upthink.entity.Course;
@@ -29,7 +28,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -92,7 +90,7 @@ public class CourseController extends BaseController {
     })
     @PostMapping(value = "/course/upload", produces = "application/json;charset=UTF-8")
     public BaseResult<?> uploadCourse(HttpServletRequest request,@ApiParam("课程视频") MultipartFile file) {
-        String url = QiniuUtil.upLoadToQiNiu(request, file);
+        String url = QiniuVideoUtil.upLoadToQiNiu(request, file);
 
         return getBaseResultSuccess(url, "上传成功");
     }
@@ -207,8 +205,6 @@ public class CourseController extends BaseController {
         course.setUserId(userInfo.getUserId());
         course.setCourseType(type);
         Page<Course> page = courseService.findPage(new Page<Course>(request, response), course);
-
-
 
         return getBaseResultSuccess(page, "查询数据成功");
     }

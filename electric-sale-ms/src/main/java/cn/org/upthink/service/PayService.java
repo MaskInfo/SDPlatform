@@ -146,7 +146,7 @@ public class PayService {
             //根据operationId进行操作
             String payType = attachData.get("payType");
             String operationId = attachData.get("operationId");
-            String anserId = attachData.get("anserId");
+            String anserId = attachData.get("answerId");
             if (payType.equals(PayTypeEnum.ASK.name())) {
                 Question question = questionService.get(operationId);
                 if(Objects.nonNull(question)){

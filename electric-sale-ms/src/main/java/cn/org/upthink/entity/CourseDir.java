@@ -2,6 +2,7 @@ package cn.org.upthink.entity;
 
 import cn.org.upthink.gen.annotation.TableField;
 import cn.org.upthink.persistence.mybatis.entity.BaseDataEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import lombok.ToString;
 import java.math.BigDecimal;
 
 @Getter@Setter@ToString
+@JsonIgnoreProperties("handler")
 public class CourseDir extends BaseDataEntity<CourseDir> {
     @TableField(name = "course_id",isQuery = true,required = true,remark = "所属课程id")
     private String courseId;

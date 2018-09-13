@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties("handler")
 public class User extends BaseDataEntity<User> {
     @TableField(name = "user_name",isQuery = true,required = true,remark = "用户名")
     private String userName;

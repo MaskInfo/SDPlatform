@@ -44,6 +44,9 @@
         SELECT
         <include refid="roleDaoColumns"/>
         FROM tb_role a
+        <if test="userId != null and userId != ''">
+            left join tb_user_role b on a.id = b.role_id
+        </if>
         <where>
             a.del_flag = #{delFlag}
              <if test="roleName != null and roleName != ''">
@@ -52,6 +55,9 @@
              <if test="roleType != null and roleType != ''">
                 AND a.ROLE_TYPE LIKE CONCAT('%', #{roleType}, '%')
              </if>
+            <if test="userId != null and userId != ''">
+                AND b.user_id = #{userId}
+            </if>
 		${sqlMap.dsf}
         </where>
         ORDER BY a.update_date DESC
@@ -83,6 +89,9 @@
 		    #{roleName},
 		    #{roleType}
         )
+    </insert>
+    <insert id="bind">
+        insert into tb_user_role(role_id,user_id) values(#{roleId},#{userId})
     </insert>
 
     <update id="update">

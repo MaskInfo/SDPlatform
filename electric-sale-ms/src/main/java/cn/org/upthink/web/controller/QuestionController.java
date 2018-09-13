@@ -41,7 +41,7 @@ public class QuestionController extends BaseController {
     @Autowired
     private QuestionService questionService;
 
-    @ApiOperation(value = "问题列表查询", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "问题列表查询/用户", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
@@ -54,12 +54,25 @@ public class QuestionController extends BaseController {
         return getBaseResultSuccess(page, "查询数据成功");
     }
 
+    @ApiOperation(value = "问题列表查询/专家", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
+    })
+    @RequestMapping(produces = "application/json;charset=UTF-8", value = "/expert",method = RequestMethod.GET)
+    public BaseResult<?> listQuestionExpert(HttpServletRequest request, HttpServletResponse response, @ApiParam QuestionQueryDTO questionQueryDTO) {
+        Page<Question> page = questionService.listExpert(questionQueryDTO, request, response);
+        if (page.getList().isEmpty()) {
+            return getBaseResultSuccess(new ArrayList<Question>(), "没有查询到有效的数据。");
+        }
+        return getBaseResultSuccess(page, "查询数据成功");
+    }
+
     @ApiOperation(value = "问题回答", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "string", paramType = "head")
     })
     @RequestMapping(produces = "application/json;charset=UTF-8", method = RequestMethod.PUT)
-    public BaseResult<?> listQuestion(String questionId,String answerDetail) {
+    public BaseResult<?> listQuestion(@RequestParam("questionId") String questionId,@RequestParam("answerDetail") String answerDetail) {
         Question question =new Question();
         question.setId(questionId);
         Question q = questionService.get(question);

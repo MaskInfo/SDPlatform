@@ -3,6 +3,7 @@ package cn.org.upthink.entity;
 import cn.org.upthink.gen.annotation.TableField;
 import cn.org.upthink.model.type.ExpertStateEnum;
 import cn.org.upthink.persistence.mybatis.entity.BaseDataEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,6 +18,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties("handler")
 public class Expert extends BaseDataEntity<Expert> {
     @TableField(name = "expert_name",isQuery = true,required = true,remark = "名称")
     private String expertName;
