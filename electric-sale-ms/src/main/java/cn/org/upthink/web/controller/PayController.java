@@ -1,9 +1,13 @@
 package cn.org.upthink.web.controller;
 
 import cn.org.upthink.common.dto.BaseResult;
+import cn.org.upthink.entity.Question;
+import cn.org.upthink.entity.User;
+import cn.org.upthink.helper.LoginTokenHelper;
 import cn.org.upthink.model.ResponseConstant;
 import cn.org.upthink.model.dto.PayFormDto;
 import cn.org.upthink.model.dto.PayNotifyDto;
+import cn.org.upthink.model.dto.UserFormDTO;
 import cn.org.upthink.model.type.PayTypeEnum;
 import cn.org.upthink.service.PayService;
 import cn.org.upthink.util.WechatUtil;
@@ -16,12 +20,14 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,6 +44,8 @@ import java.util.Objects;
 public class PayController extends BaseController {
     @Autowired
     private PayService payService;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @ApiOperation(value = "生成预支付订单", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiImplicitParams({
@@ -63,8 +71,9 @@ public class PayController extends BaseController {
         }
 
         Map<String, String> ret = payService.preparePay(request, payFormDto);
+
         if(ret.isEmpty()){
-            return getBaseResultSuccess(null, ResponseConstant.PREPARY_FAIL.getCode(), ResponseConstant.PREPARY_FAIL.getMsg());
+            return getBaseResultSuccess(null, ResponseConstant.OK.getCode(), "免费绑定成功");
         }
         return getBaseResultSuccess(ret, ResponseConstant.OK.getCode(), ResponseConstant.OK.getMsg());
     }

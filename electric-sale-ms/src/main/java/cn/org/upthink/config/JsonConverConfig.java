@@ -25,6 +25,7 @@ public class JsonConverConfig {
         SimpleDateFormat smt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         objectMapper.setDateFormat(smt);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        
         mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
 
         //设置中文编码格式

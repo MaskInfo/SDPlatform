@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -61,39 +62,57 @@ public class PayService {
         String operationId;
         if(PayTypeEnum.ASK.name().equals(payFormDto.getPayType())){
             operationId = String.valueOf(System.currentTimeMillis());
+            //生成订单
+            questionService.save(operationId, request, payFormDto);
         }else if(PayTypeEnum.COURSE.name().equals(payFormDto.getPayType())){
             operationId = payFormDto.getCourseId();
         }else {
             operationId = payFormDto.getMaterialId();
         }
-        //拼接参数
-        String params = this.getParams(request, payFormDto, operationId);
-        System.out.println(params);
 
-        //请求 获取prepare_id
-        String result = HttpClientUtils.INSTANCE.sendPost(preparePayUrl, params, HttpClientUtils.XML);
-        Map<String, String> retMap = Xml2MapConverter.readStringXmlOut(result);
-        System.out.println(retMap);
+        //若课程免费
+        if(new BigDecimal(payFormDto.getFee()).compareTo(BigDecimal.ZERO) == 0){
+            //直接绑定
+            UserFormDTO userInfo = LoginTokenHelper.INSTANCE.getUserInfo(stringRedisTemplate,request);
 
-        //签名
-        Map<String, String> map = new HashMap<>();
-        List<String> keyList = Arrays.asList("appId", "nonceStr", "package", "signType", "timeStamp");
-        map.put("appId", retMap.get("appid"));
-        map.put("nonceStr", retMap.get("nonce_str"));
-        map.put("signType", "MD5");
-        map.put("timeStamp", String.valueOf(System.currentTimeMillis()));
-        map.put("package", "prepay_id=" + retMap.get("prepay_id"));
-        map.put("paySign", getSign(map, keyList));
+            String payType = payFormDto.getPayType();
+            String anserId = payFormDto.getAnswerId();
+            if (payType.equals(PayTypeEnum.ASK.name())) {
+                Question question = questionService.get(operationId);
+                if(Objects.nonNull(question)){
+                    question.setPay(true);
+                    User anser = new User();
+                    anser.setId(anserId);
+                    question.setAnswerer(anser);
+                    questionService.save(question);
+                }
+            } else if(payType.equals(PayTypeEnum.COURSE.name())) {
+                courseService.bind(userInfo.getUserId(), operationId);
+            }else {
+                materialService.bind(userInfo.getUserId(), operationId);
+            }
+            return Collections.EMPTY_MAP;
+        }else {
+            //拼接参数
+            String params = this.getParams(request, payFormDto, operationId);
+            System.out.println(params);
 
-        //生成订单
-        String payType = payFormDto.getPayType();
-        if (payType.equals(PayTypeEnum.ASK.name())) {
-            questionService.save(operationId, request, payFormDto);
-        } else {
-            //do nothing
+            //请求 获取prepare_id
+            String result = HttpClientUtils.INSTANCE.sendPost(preparePayUrl, params, HttpClientUtils.XML);
+            Map<String, String> retMap = Xml2MapConverter.readStringXmlOut(result);
+            System.out.println(retMap);
+
+            //签名
+            Map<String, String> map = new HashMap<>();
+            List<String> keyList = Arrays.asList("appId", "nonceStr", "package", "signType", "timeStamp");
+            map.put("appId", retMap.get("appid"));
+            map.put("nonceStr", retMap.get("nonce_str"));
+            map.put("signType", "MD5");
+            map.put("timeStamp", String.valueOf(System.currentTimeMillis()));
+            map.put("package", "prepay_id=" + retMap.get("prepay_id"));
+            map.put("paySign", getSign(map, keyList));
+            return map;
         }
-
-        return map;
     }
 
     private String getParams(HttpServletRequest request, PayFormDto payFormDto, String operationId) throws Exception {
